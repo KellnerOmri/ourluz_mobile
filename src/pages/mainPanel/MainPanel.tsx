@@ -65,14 +65,8 @@ export const MainPanel = () => {
         }
     });
 
-    const removeItem = async () => {
-        try {
-            await AsyncStorage.removeItem('myKey');
-            console.log('Item successfully removed from AsyncStorage');
-        } catch (error) {
-            console.error('Error removing item from AsyncStorage: ', error);
-        }
-    };
+
+
     const signOut = async () => {
         try {
             await AsyncStorage.removeItem('userToken');
