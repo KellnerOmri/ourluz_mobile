@@ -8,9 +8,12 @@ import {setCalendarModeModel} from "../../../../store/global.slice";
 import {useDispatch} from "react-redux";
 import {CalendarWeek} from "./CalendarWeek";
 import {convertToTwoDigitsDate, getFirstDayOfWeek, getLastDateOfWeek} from "../../../../utils/general";
+import {createEventDictionary} from "../../../../utils/data-management";
+import {EventModel} from "../../../../models/event.model";
 
 export const Calendar = () => {
-    const {calendarModeModel} = useAppSelector(state => state.global)
+
+    const {calendarModeModel, eventList} = useAppSelector(state => state.global)
     const dispatch = useDispatch()
     const [isSelectedDay, setSelectedDate] = useState<boolean>(false);
     const [currentDay, setCurrentDay] = useState<Date | undefined>(undefined);
@@ -22,7 +25,8 @@ export const Calendar = () => {
     };
 
     const currentDate: Date = new Date();
-
+    const eventsByDates: { [date: string]: EventModel[] } = createEventDictionary(Object.values(eventList));
+    console.log(eventsByDates, "eventDictionary")
 
     const nextMonth = () => {
         const curDate = currentDay ? currentDay : new Date();
@@ -129,7 +133,6 @@ export const Calendar = () => {
     const firstDayOfWeek: Date = useMemo(() => {
         return getFirstDayOfWeek(currentDay ?? currentDate);
     }, [currentDay, currentDate])
-    console.log(firstDayOfWeek, "firstDayOfWeek")
 
     const renderHeader = (header: string, nextDate: any, prevDate: any): JSX.Element => {
         return <View style={styles.displayDateStyle}>
@@ -192,6 +195,7 @@ export const Calendar = () => {
                 isSelectedDay={isSelectedDay}
                 changeCurrentDay={changeCurrentDay}
                 firstDayOfMonth={firstDayOfMonth}
+                eventsByDates={eventsByDates}
             />}
         {calendarModeModel === CalendarModeModel.WEEK &&
             <CalendarWeek

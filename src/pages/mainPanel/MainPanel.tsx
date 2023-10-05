@@ -1,14 +1,20 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Header} from "./components/header/Header";
 import {colors} from "../../utils/colors";
 import {Calendar} from "./components/calendar/Calendar";
 import {useAppSelector} from "../../app/hooks";
 import {useDispatch} from "react-redux";
-import {SelectedPage} from "../../utils/enum.const";
+import {SelectedPage, SelectedPopup} from "../../utils/enum.const";
 import {setSelectedPage} from "../../store/global.slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {setToken} from "../../store/authentication.slice";
+import {
+    getAllEventsByOrganization,
+    getAllRolesByOrganization,
+    getAllUsers,
+    isUserIsManager
+} from "../../utils/data-management";
 
 export const MainPanel = () => {
     const dispatch = useDispatch()
@@ -65,7 +71,22 @@ export const MainPanel = () => {
         }
     });
 
-
+    const {
+        selectedEvent,
+        selectedPopup,
+        isMobile,
+        isAdmin,
+        currentUser
+    } = useAppSelector(state => state.global);
+    useEffect(() => {
+        // if (selectedPopup === SelectedPopup.Close){
+        getAllEventsByOrganization().then()
+        getAllRolesByOrganization().then()
+        isUserIsManager().then()
+        getAllUsers().then()
+        // }
+    }, [])
+    // }, [selectedPopup])
 
     const signOut = async () => {
         try {

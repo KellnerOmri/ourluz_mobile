@@ -443,3 +443,32 @@ export const sendLinkForNewUser = async (userId: number) => {
         return false
     }
 }
+
+export const createEventDictionary = (events: EventModel[]): { [date: string]: EventModel[] } => {
+    const eventDictionary: { [date: string]: EventModel[] } = {};
+
+    events.forEach(event => {
+        const startDate = new Date(event.start);
+        const endDate = new Date(event.end);
+
+        const currentDate = new Date(startDate);
+
+        // Loop through dates between start and end dates
+        while (currentDate <= endDate) {
+            const dateString = currentDate.toISOString().split('T')[0];
+
+            if (!eventDictionary[dateString]) {
+                eventDictionary[dateString] = [];
+            }
+
+            eventDictionary[dateString].push(event);
+            // Move to the next day
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+    });
+
+    return eventDictionary;
+}
+
+// Call the function with your events array
+
