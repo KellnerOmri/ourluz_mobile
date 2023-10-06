@@ -1,32 +1,50 @@
-import React, {JSX, useMemo, useState} from "react";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {JSX, useEffect, useMemo, useState} from "react";
+import {Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {CalendarMonth} from "./CalendarMonth";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
 import {colors} from "../../../../utils/colors";
 import {useAppSelector} from "../../../../app/hooks";
-import {setCalendarModeModel} from "../../../../store/global.slice";
+import {setCalendarModeModel, setSelectedEvent} from "../../../../store/global.slice";
 import {useDispatch} from "react-redux";
 import {CalendarWeek} from "./CalendarWeek";
-import {convertToTwoDigitsDate, getFirstDayOfWeek, getLastDateOfWeek} from "../../../../utils/general";
-import {createEventDictionary} from "../../../../utils/data-management";
+import {
+    convertToTwoDigitsDate,
+    getFirstDayOfWeek,
+    getLastDateOfWeek,
+    getStatusEventForClient
+} from "../../../../utils/general";
+import {
+    createEventDictionary,
+    removeAvailabilityFromEvent,
+    setAvailabilityToEvent
+} from "../../../../utils/data-management";
 import {EventModel} from "../../../../models/event.model";
+import {CalendarDay} from "./CalendarDay";
+import {text} from "../../../../utils/dictionary-management";
+import moment from "moment";
+import {UserEventStatus} from "../../../../utils/enum.const";
 
 export const Calendar = () => {
-
-    const {calendarModeModel, eventList} = useAppSelector(state => state.global)
+    const [openBookedModal, setOpenBookedModal] = useState(true)
+    const {calendarModeModel, eventList, selectedEvent, currentUser} = useAppSelector(state => state.global)
     const dispatch = useDispatch()
     const [isSelectedDay, setSelectedDate] = useState<boolean>(false);
-    const [currentDay, setCurrentDay] = useState<Date | undefined>(undefined);
+    const [currentDay, setCurrentDay] = useState<Date | undefined>(new Date());
     const weekdays = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ש׳"];
     const months = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
     const changeCurrentDay = (day: { year: number; month: number; number: number }) => {
         setSelectedDate(true);
         setCurrentDay(new Date(day.year, day.month, day.number));
     };
-
+    useEffect(() => {
+        if (selectedEvent) {
+            setOpenBookedModal(true)
+        } else {
+            setOpenBookedModal(false)
+        }
+    }, [selectedEvent])
     const currentDate: Date = new Date();
     const eventsByDates: { [date: string]: EventModel[] } = createEventDictionary(Object.values(eventList));
-    console.log(eventsByDates, "eventDictionary")
 
     const nextMonth = () => {
         const curDate = currentDay ? currentDay : new Date();
@@ -72,6 +90,44 @@ export const Calendar = () => {
         return currentDay ? new Date(currentDay.getFullYear(), currentDay.getMonth(), 1) : new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     }, [currentDay])
 
+
+    const NEXT = ">"
+    const PREV = "<"
+
+    const firstDayOfWeek: Date = useMemo(() => {
+        return getFirstDayOfWeek(currentDay ?? currentDate);
+    }, [currentDay])
+
+    const renderHeader = (header: string, nextDate: any, prevDate: any): JSX.Element => {
+        return <View style={styles.displayDateStyle}>
+            <TouchableOpacity style={styles.arrowDate} onPress={prevDate}><Text>{PREV}</Text></TouchableOpacity>
+            <Text>{header}</Text>
+            <TouchableOpacity style={styles.arrowDate} onPress={nextDate}><Text>{NEXT}</Text></TouchableOpacity>
+        </View>
+    }
+    const renderCalendarHeader = (): JSX.Element => {
+        switch (calendarModeModel) {
+            case CalendarModeModel.DAY:
+                return renderHeader(`${months[(currentDay ?? currentDate).getMonth()]} ${convertToTwoDigitsDate((currentDay ?? currentDate).getDate())}`, nextDay, previousDay)
+            case CalendarModeModel.WEEK:
+                return renderHeader(`${months[firstDayOfWeek.getMonth()]} ${convertToTwoDigitsDate(getLastDateOfWeek(firstDayOfWeek).getDate())} - ${convertToTwoDigitsDate(firstDayOfWeek.getDate())}`, nextWeek, previousWeek)
+            case CalendarModeModel.MONTH:
+                return renderHeader(`${months[firstDayOfMonth.getMonth()]} ${firstDayOfMonth.getFullYear()}`, nextMonth, previousMonth)
+            default:
+                return <View></View>
+        }
+
+    }
+    const [selectedAvailabilityEvent, setSelectedAvailabilityEvent] = useState(getStatusEventForClient((selectedEvent as EventModel)?.users ?? [], currentUser))
+
+    const addAvailabilityEvent = async () => {
+        await setAvailabilityToEvent((selectedEvent as EventModel).id).then()
+        setSelectedAvailabilityEvent(UserEventStatus.available)
+    }
+    const removeAvailabilityEvent = async () => {
+        await removeAvailabilityFromEvent((selectedEvent as EventModel).id).then()
+        setSelectedAvailabilityEvent(UserEventStatus.nothing)
+    }
     const styles = StyleSheet.create({
         calendarContainer: {
             zIndex: 2,
@@ -125,36 +181,18 @@ export const Calendar = () => {
             display: "flex",
             alignItems: "center"
             , justifyContent: "center"
-        }
+        }, eventDetailsContainer: {
+            display: "flex",
+            alignItems: "center"
+        }, eventDetailsLine: {
+            justifyContent: "flex-end",
+            display: "flex",
+            flexDirection: "row",
+            gap: 10
+        },
+        eventDetailsLabel: {},
+        eventDetailsValue: {}
     });
-    const NEXT = ">"
-    const PREV = "<"
-
-    const firstDayOfWeek: Date = useMemo(() => {
-        return getFirstDayOfWeek(currentDay ?? currentDate);
-    }, [currentDay, currentDate])
-
-    const renderHeader = (header: string, nextDate: any, prevDate: any): JSX.Element => {
-        return <View style={styles.displayDateStyle}>
-            <TouchableOpacity style={styles.arrowDate} onPress={prevDate}><Text>{PREV}</Text></TouchableOpacity>
-            <Text>{header}</Text>
-            <TouchableOpacity style={styles.arrowDate} onPress={nextDate}><Text>{NEXT}</Text></TouchableOpacity>
-        </View>
-    }
-    const renderCalendarHeader = (): JSX.Element => {
-        switch (calendarModeModel) {
-            case CalendarModeModel.DAY:
-                return renderHeader(`${months[(currentDay ?? currentDate).getMonth()]} ${convertToTwoDigitsDate((currentDay ?? currentDate).getDate())}`, nextDay, previousDay)
-            case CalendarModeModel.WEEK:
-                return renderHeader(`${months[firstDayOfWeek.getMonth()]} ${convertToTwoDigitsDate(getLastDateOfWeek(firstDayOfWeek).getDate())} - ${convertToTwoDigitsDate(firstDayOfWeek.getDate())}`, nextWeek, previousWeek)
-            case CalendarModeModel.MONTH:
-                return renderHeader(`${months[firstDayOfMonth.getMonth()]} ${firstDayOfMonth.getFullYear()}`, nextMonth, previousMonth)
-            default:
-                return <View></View>
-        }
-
-    }
-
     return <View style={styles.calendarContainer}>
         <View style={styles.calendarHeader}>
             {renderCalendarHeader()}
@@ -196,13 +234,120 @@ export const Calendar = () => {
                 changeCurrentDay={changeCurrentDay}
                 firstDayOfMonth={firstDayOfMonth}
                 eventsByDates={eventsByDates}
+                currentUser={currentUser}
             />}
         {calendarModeModel === CalendarModeModel.WEEK &&
-            <CalendarWeek
-                dateMode={calendarModeModel}
-                currentDay={currentDay}
-                isSelectedDay={isSelectedDay}
-                changeCurrentDay={changeCurrentDay}
-                firstDayOfWeek={firstDayOfWeek}/>}
+            <ScrollView style={{height: "100%", width: "100%"}}>
+                <CalendarWeek
+                    dateMode={calendarModeModel}
+                    currentDay={currentDay}
+                    isSelectedDay={isSelectedDay}
+                    changeCurrentDay={changeCurrentDay}
+                    firstDayOfWeek={firstDayOfWeek}
+                    eventsByDates={eventsByDates}
+                    currentUser={currentUser}
+                />
+            </ScrollView>
+        }
+        {calendarModeModel === CalendarModeModel.DAY &&
+            <ScrollView style={{height: "100%", width: "100%"}}>
+                <CalendarDay
+                    dateMode={calendarModeModel}
+                    currentDay={currentDay}
+                    isSelectedDay={isSelectedDay}
+                    changeCurrentDay={changeCurrentDay}
+                    eventsByDates={eventsByDates}
+                    currentUser={currentUser}
+                />
+            </ScrollView>
+        }
+
+
+        <Modal
+            style={{
+                display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", height: "100%"
+            }}
+            animationType="fade"
+            transparent={true}
+            visible={openBookedModal}
+            onRequestClose={() => dispatch(setSelectedEvent(undefined))}
+        >
+            <View style={{
+                flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)'
+
+            }}>
+                <View style={{
+                    width: "90%",
+                    height: "90%",
+                    padding: 20,
+                    backgroundColor: colors.white,
+                    borderRadius: 8,
+                    display: "flex",
+                    gap: 10
+                }}>
+                    <TouchableOpacity
+                        onPress={() => dispatch(setSelectedEvent(undefined))}>
+                        <Image
+                            style={{height: 20, width: 20}}
+                            source={require("../../../../assets/icons/close.png")}/></TouchableOpacity>
+                    <View style={styles.eventDetailsContainer}>
+                        <Text>{selectedEvent?.description}</Text>
+                    </View>
+                    <View style={styles.eventDetailsLine}>
+                        <Text style={styles.eventDetailsValue}>{selectedEvent?.location}</Text>
+                        <Text style={styles.eventDetailsLabel}>{text.location}:</Text>
+                    </View>
+                    <View style={styles.eventDetailsLine}>
+                        <Text
+                            style={styles.eventDetailsValue}>{moment(selectedEvent?.start).format("HH:MM DD/MM")}</Text>
+                        <Text style={styles.eventDetailsLabel}>{text.startAtTime}:</Text>
+                    </View>
+                    <View style={styles.eventDetailsLine}>
+                        <Text
+                            style={styles.eventDetailsValue}>{moment(selectedEvent?.end).format("HH:MM DD/MM")}</Text>
+                        <Text style={styles.eventDetailsLabel}>{text.endAtTime}:</Text>
+                    </View>
+                    {getStatusEventForClient((selectedEvent as EventModel)?.users ?? [], currentUser) !== UserEventStatus.booked &&
+                        <View style={styles.eventDetailsLine}>
+                            <Text
+                                style={styles.eventDetailsValue}>{selectedAvailabilityEvent === UserEventStatus.available ? "זמין" : "לא זמין"}</Text>
+                            <Text style={styles.eventDetailsLabel}>{text.availabilityStatus}:</Text>
+                        </View>}
+                    {getStatusEventForClient((selectedEvent as EventModel)?.users ?? [], currentUser) !== UserEventStatus.booked &&
+                        <View style={{display: "flex", gap: 30}}>
+                            <Text style={styles.eventDetailsLabel}>{text.setAvailabilityText}:</Text>
+                            <View style={{display: "flex", flexDirection: "row", justifyContent: "center", gap: 20}}>
+                                <TouchableOpacity
+                                    style={{
+                                        borderRadius: 50,
+                                        padding: 6,
+                                        backgroundColor: selectedAvailabilityEvent === UserEventStatus.available ? "green" : "white"
+                                    }}
+                                    onPress={addAvailabilityEvent}>
+                                    <Image style={{width: 30, height: 30}}
+                                           source={require("../../../../assets/icons/correct.png")}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{
+                                    borderRadius: 50,
+                                    padding: 6,
+                                    backgroundColor: selectedAvailabilityEvent === UserEventStatus.nothing ? "red" : "white"
+                                }} onPress={removeAvailabilityEvent}>
+                                    <Image style={{width: 30, height: 30}}
+                                           source={require("../../../../assets/icons/wrong.png")}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>}
+                    {getStatusEventForClient((selectedEvent as EventModel)?.users ?? [], currentUser) === UserEventStatus.booked &&
+                        <View><Text>{text.youAreAlreadyBooked}</Text></View>
+                    }
+
+                    <TouchableOpacity
+                        style={{width: "100%", marginTop: 40, display: "flex", alignItems: "center"}}
+                        onPress={() => dispatch(setSelectedEvent(undefined))}>
+                        <Text style={{color: colors.primary}}>סיימתי</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
     </View>
 }

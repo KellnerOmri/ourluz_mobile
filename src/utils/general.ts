@@ -2,6 +2,8 @@ import {store} from "../app/store";
 import {EventModel} from "../models/event.model";
 import {UserModel} from "../models/user.model";
 import {UserEventStatus} from "./enum.const";
+import moment from "moment";
+import {colors} from "./colors";
 
 const {isEnglish} = store.getState().global
 
@@ -12,17 +14,6 @@ const getUsersList = () => {
     return store.getState().global.userList
 }
 
-export function isMobileFunction(): boolean {
-    const toMatch: RegExp[] = [/Android/i, /webOS/i, /iPhone/i, /iPad/i, /iPod/i, /BlackBerry/i, /Windows Phone/i];
-
-    if (toMatch.some((toMatchItem) => {
-        return navigator.userAgent.match(toMatchItem);
-    }) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform))) {
-        return true;
-    }
-
-    return false;
-}
 
 export const getRollName = (rollId: number | null) => {
     return getRollList().find((a) => a.id === rollId)?.description
@@ -74,16 +65,16 @@ export const checkIfUserIsAvailabilityToEvent = (currentUser: UserModel | undefi
 export const getColorByStatus = (status: UserEventStatus) => {
     switch (status) {
         case UserEventStatus.booked: {
-            return "green"
+            return colors.lightGreen
         }
         case UserEventStatus.available: {
-            return "orange"
+            return colors.orange
         }
         case UserEventStatus.nothing: {
-            return "var(--primary)"
+            return colors.primary
         }
         case UserEventStatus.eventDoneWithoutBooked: {
-            return "red"
+            return colors.soil
         }
     }
 
@@ -105,7 +96,7 @@ export const getStatusEventForClient = (eventUsers: { id: number, booked: boolea
 }
 
 export const getFirstDayOfWeek = (date: Date): Date => {
-    const copiedDate = new Date(date);
+    const copiedDate = new Date(moment(date).format("yyyy-MM-DD"))
     const dayOfWeek = copiedDate.getDay();
     copiedDate.setDate(copiedDate.getDate() - dayOfWeek);
     return copiedDate;

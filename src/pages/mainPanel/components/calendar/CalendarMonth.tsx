@@ -4,6 +4,11 @@ import moment from "moment";
 import {colors} from "../../../../utils/colors";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
 import {EventModel} from "../../../../models/event.model";
+import {setCalendarModeModel, setSelectedEvent} from "../../../../store/global.slice";
+import {useDispatch} from "react-redux";
+import {useAppSelector} from "../../../../app/hooks";
+import {UserModel} from "../../../../models/user.model";
+import {getColorByStatus, getStatusEventForClient} from "../../../../utils/general";
 
 interface CalendarDay {
     currentMonth: boolean;
@@ -21,13 +26,14 @@ interface Props {
     dateMode: CalendarModeModel,
     firstDayOfMonth: Date,
     eventsByDates: { [date: string]: EventModel[] }
+    currentUser: UserModel | undefined
 }
 
 export const CalendarMonth: React.FC<Props> = props => {
-
+    const dispatch = useDispatch()
     const DAYS_A_WEEK = 7;
     const DAYS_TO_SHOW = 42;
-    const {eventsByDates, currentDay, changeCurrentDay, isSelectedDay, firstDayOfMonth} = props;
+    const {currentUser, eventsByDates, currentDay, changeCurrentDay, isSelectedDay, firstDayOfMonth} = props;
     const currentDate: Date = currentDay ?? new Date()
     const weekdayOfFirstDay = firstDayOfMonth.getDay();
     const currentDays: CalendarDay[] = [];
@@ -49,10 +55,8 @@ export const CalendarMonth: React.FC<Props> = props => {
             selected: isSelectedDay && firstDayOfMonth.toDateString() === currentDate.toDateString() && currentDay !== undefined,
             year: firstDayOfMonth.getFullYear(),
         };
-
         currentDays.push(calendarDay);
     }
-
 
     const styles = StyleSheet.create({
         calendarDaysContainer: {
@@ -85,18 +89,22 @@ export const CalendarMonth: React.FC<Props> = props => {
         }
     });
 
-    console.log(eventsByDates, "eventsByDates")
     return <View style={styles.calendarDaysContainer}>
-        {currentDays.map((day) => {
+        {currentDays.map((day, index) => {
             let thereIsEventsInThisDate: EventModel[] = [];
             thereIsEventsInThisDate = eventsByDates[moment(day.date).format("yyyy-MM-DD")];
-            console.log(thereIsEventsInThisDate, "thereIsEventsInThisDate")
             return (<TouchableOpacity
                 style={[{backgroundColor: day.date.getDay() === 6 ? colors.lightSlateBlue : colors.white}, styles.dayContainer]}
-                key={moment(day.date).format("yyyy-MM-DD")}
+                key={`${index}-${moment(day.date).format("yyyy-MM-DD")}`}
                 onPress={() => {
-                    console.log("im change day")
-                    changeCurrentDay(day)
+                    if (day.currentMonth) {
+                        changeCurrentDay(day)
+                        console.log("asdfasdf")
+                        dispatch(setCalendarModeModel(CalendarModeModel.DAY))
+                    } else {
+                        changeCurrentDay(day)
+                    }
+
                 }}
             >
                 <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
@@ -112,18 +120,28 @@ export const CalendarMonth: React.FC<Props> = props => {
 
                 {thereIsEventsInThisDate && thereIsEventsInThisDate.length > 0 &&
                     <View style={{width: "100%", display: "flex", gap: 2}}>
-                        {thereIsEventsInThisDate.map((e, index) => {
+                        {thereIsEventsInThisDate.map((eventModal, index) => {
                             return index < 4 ?
                                 <TouchableOpacity key={`${moment(day.date).format("yyyy-MM-DD")}-${index}`}
-                                                  onPress={() => console.log("click item")}
-                                                  style={{backgroundColor: e.backgroundColor}}>
+                                                  onPress={() => console.log("im here")}
+                                    // dispatch(setSelectedEvent(eventModal))
+                                                  style={{backgroundColor: getColorByStatus(getStatusEventForClient(eventModal.users, currentUser))}}>
                                     <Text ellipsizeMode={"tail"}
                                           numberOfLines={thereIsEventsInThisDate.length > 2 ? 1 : 2}
-                                          style={styles.eventName}>{e.description}</Text></TouchableOpacity>
+                                          style={styles.eventName}>{eventModal.description}</Text></TouchableOpacity>
                                 :
                                 index === 4 ?
                                     <TouchableOpacity key={`${moment(day.date).format("yyyy-MM-DD")}-${index}`}
-                                                      onPress={() => console.log("click item")}
+                                                      onPress={() => {
+                                                          if (day.currentMonth) {
+                                                              changeCurrentDay(day)
+                                                              console.log("asdfasdf")
+                                                              dispatch(setCalendarModeModel(CalendarModeModel.DAY))
+                                                          } else {
+                                                              changeCurrentDay(day)
+                                                          }
+
+                                                      }}
                                     >
                                         <Text ellipsizeMode={"tail"} numberOfLines={1}
                                               style={styles.moreEvents}>{thereIsEventsInThisDate.length - 3} +</Text></TouchableOpacity>

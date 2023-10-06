@@ -32,6 +32,7 @@ export const colors = {
     purple: "#A25DDC",
     mintGreen: "#01B698",
     soil: "#AC6F37",
+    orange: "#FFA500",
     tan: "#AD967A",
     grey: "#B8B8B8",
     babyBlue: "#A1E3F6",

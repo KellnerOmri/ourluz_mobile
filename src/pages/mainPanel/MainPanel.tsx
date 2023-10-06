@@ -71,20 +71,18 @@ export const MainPanel = () => {
         }
     });
 
-    const {
-        selectedEvent,
-        selectedPopup,
-        isMobile,
-        isAdmin,
-        currentUser
-    } = useAppSelector(state => state.global);
+    // const {
+    //     selectedEvent,
+    //     selectedPopup,
+    //     isMobile,
+    //     isAdmin,
+    //     currentUser
+    // } = useAppSelector(state => state.global);
     useEffect(() => {
-        // if (selectedPopup === SelectedPopup.Close){
         getAllEventsByOrganization().then()
         getAllRolesByOrganization().then()
         isUserIsManager().then()
         getAllUsers().then()
-        // }
     }, [])
     // }, [selectedPopup])
 
