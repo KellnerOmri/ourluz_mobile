@@ -99,7 +99,6 @@ export const CalendarMonth: React.FC<Props> = props => {
                 onPress={() => {
                     if (day.currentMonth) {
                         changeCurrentDay(day)
-                        console.log("asdfasdf")
                         dispatch(setCalendarModeModel(CalendarModeModel.DAY))
                     } else {
                         changeCurrentDay(day)
