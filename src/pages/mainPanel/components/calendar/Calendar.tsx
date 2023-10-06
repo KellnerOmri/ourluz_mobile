@@ -29,7 +29,7 @@ export const Calendar = () => {
     const {calendarModeModel, eventList, selectedEvent, currentUser} = useAppSelector(state => state.global)
     const dispatch = useDispatch()
     const [isSelectedDay, setSelectedDate] = useState<boolean>(false);
-    const [currentDay, setCurrentDay] = useState<Date | undefined>(new Date());
+    const [currentDay, setCurrentDay] = useState<Date>(new Date());
     const weekdays = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ש׳"];
     const months = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
     const changeCurrentDay = (day: { year: number; month: number; number: number }) => {

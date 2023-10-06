@@ -8,7 +8,7 @@ import {CalendarModeModel} from "../models/calendar-mode.model";
 
 
 const initialState: GlobalSliceModel = {
-    calendarModeModel: CalendarModeModel.MONTH,
+    calendarModeModel: CalendarModeModel.WEEK,
     isEnglish: false,
     selectedPopup: SelectedPopup.Close,
     selectedPage: SelectedPage.MainPanel,

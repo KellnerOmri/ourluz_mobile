@@ -34,10 +34,8 @@ export const CalendarMonth: React.FC<Props> = props => {
     const DAYS_A_WEEK = 7;
     const DAYS_TO_SHOW = 42;
     const {currentUser, eventsByDates, currentDay, changeCurrentDay, isSelectedDay, firstDayOfMonth} = props;
-    const currentDate: Date = currentDay ?? new Date()
     const weekdayOfFirstDay = firstDayOfMonth.getDay();
     const currentDays: CalendarDay[] = [];
-
     for (let day = 0; day < DAYS_TO_SHOW; day++) {
         if (day === 0 && weekdayOfFirstDay === 0) {
             firstDayOfMonth.setDate(firstDayOfMonth.getDate() - DAYS_A_WEEK);
@@ -48,11 +46,11 @@ export const CalendarMonth: React.FC<Props> = props => {
         }
 
         const calendarDay = {
-            currentMonth: firstDayOfMonth.getMonth() === currentDate.getMonth(),
+            currentMonth: firstDayOfMonth.getMonth() === (currentDay as Date).getMonth(),
             date: new Date(firstDayOfMonth),
             month: firstDayOfMonth.getMonth(),
             number: firstDayOfMonth.getDate(),
-            selected: isSelectedDay && firstDayOfMonth.toDateString() === currentDate.toDateString() && currentDay !== undefined,
+            selected: isSelectedDay && firstDayOfMonth.toDateString() === (currentDay as Date).toDateString() && currentDay !== undefined,
             year: firstDayOfMonth.getFullYear(),
         };
         currentDays.push(calendarDay);
@@ -121,13 +119,13 @@ export const CalendarMonth: React.FC<Props> = props => {
                     <View style={{width: "100%", display: "flex", gap: 2}}>
                         {thereIsEventsInThisDate.map((eventModal, index) => {
                             return index < 4 ?
-                                <TouchableOpacity key={`${moment(day.date).format("yyyy-MM-DD")}-${index}`}
-                                                  onPress={() => console.log("im here")}
+                                <View key={`${moment(day.date).format("yyyy-MM-DD")}-${index}`}
+                                    // onPress={() => console.log("im here")}
                                     // dispatch(setSelectedEvent(eventModal))
-                                                  style={{backgroundColor: getColorByStatus(getStatusEventForClient(eventModal.users, currentUser))}}>
+                                      style={{backgroundColor: getColorByStatus(getStatusEventForClient(eventModal.users, currentUser))}}>
                                     <Text ellipsizeMode={"tail"}
                                           numberOfLines={thereIsEventsInThisDate.length > 2 ? 1 : 2}
-                                          style={styles.eventName}>{eventModal.description}</Text></TouchableOpacity>
+                                          style={styles.eventName}>{eventModal.description}</Text></View>
                                 :
                                 index === 4 ?
                                     <TouchableOpacity key={`${moment(day.date).format("yyyy-MM-DD")}-${index}`}
