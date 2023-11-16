@@ -20,4 +20,5 @@ export interface GlobalSliceModel {
     slotSelected: { start: Date, end: Date } | undefined,
     weekDates: { start: string | Date | undefined; end: string | Date | undefined },
     weeklyEventList: { [key: string]: EventModel }
+    dateCalendarTypeAvailable: CalendarModeModel
 }

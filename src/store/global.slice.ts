@@ -21,7 +21,8 @@ const initialState: GlobalSliceModel = {
     currentUser: undefined,
     slotSelected: undefined,
     weekDates: {start: undefined, end: undefined},
-    weeklyEventList: {}
+    weeklyEventList: {},
+    dateCalendarTypeAvailable: CalendarModeModel.WEEK
 };
 export const globalSlice = createSlice({
     name: "global", initialState: initialState, reducers: {
@@ -68,6 +69,9 @@ export const globalSlice = createSlice({
         setCalendarModeModel: (state, action: PayloadAction<CalendarModeModel>) => {
             state.calendarModeModel = action.payload;
         },
+        setDateCalendarTypeAvailable: (state, action: PayloadAction<CalendarModeModel>) => {
+            state.dateCalendarTypeAvailable = action.payload;
+        },
     },
 });
 
@@ -85,7 +89,8 @@ export const {
     setCurrentUser,
     setSlotSelected,
     setWeekDates,
-    setWeeklyEventList
+    setWeeklyEventList,
+    setDateCalendarTypeAvailable
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

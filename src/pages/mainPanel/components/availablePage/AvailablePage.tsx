@@ -9,8 +9,8 @@ import {getAllEventsByDates} from "../../../../utils/data-management";
 import {AvailableRow} from "./AvailableRow";
 
 export const AvailablePage = () => {
-    const {currentUser, weeklyEventList} = useAppSelector(state => state.global)
-    const [dateType, setDateType] = useState<CalendarModeModel>(CalendarModeModel.WEEK)
+    const {currentUser, weeklyEventList, dateCalendarTypeAvailable} = useAppSelector(state => state.global)
+    // const [dateType, setDateType] = useState<CalendarModeModel>(CalendarModeModel.WEEK)
     const [datesRange, setDatesRange] = useState<{ startDate: string, endDate: string }>({
         startDate: moment(getFirstDayOfWeek(new Date())).format("yyyy-MM-DD"),
         endDate: moment(getLastDateOfWeek(getFirstDayOfWeek(new Date()))).format("yyyy-MM-DD")
@@ -29,7 +29,7 @@ export const AvailablePage = () => {
 
 
     useEffect(() => {
-        if (dateType === CalendarModeModel.WEEK) {
+        if (dateCalendarTypeAvailable === CalendarModeModel.WEEK) {
             setDatesRange({
                 startDate: moment(getFirstDayOfWeek(new Date())).format("yyyy-MM-DD"),
                 endDate: moment(getLastDateOfWeek(getFirstDayOfWeek(new Date()))).format("yyyy-MM-DD")
@@ -41,7 +41,7 @@ export const AvailablePage = () => {
                 endDate: moment(getLastDateOfMonth()).format("yyyy-MM-DD")
             })
         }
-    }, [dateType])
+    }, [dateCalendarTypeAvailable])
 
 
     const getAllEventsFunction = async () => {
@@ -97,7 +97,8 @@ export const AvailablePage = () => {
     };
 
     return <View>
-        <AvailableHeader dateType={dateType} setDateType={setDateType}/>
+        <AvailableHeader/>
+        {/*// dateType={dateType} setDateType={setDateType}*/}
         <View style={styles.timeRange}>
             <Text style={styles.rangeText}>{moment(datesRange.startDate).format("DD/MM/YY")}</Text>
             <Text style={styles.rangeText}>-</Text>

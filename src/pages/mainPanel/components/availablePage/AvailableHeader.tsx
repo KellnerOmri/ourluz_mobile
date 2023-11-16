@@ -3,13 +3,15 @@ import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {text} from "../../../../utils/dictionary-management";
 import {colors} from "../../../../utils/colors";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
+import {useAppSelector} from "../../../../app/hooks";
+import {setDateCalendarTypeAvailable} from "../../../../store/global.slice";
+import {useDispatch} from "react-redux";
 
 
-export const AvailableHeader: React.FC<{ dateType: CalendarModeModel, setDateType: any }> = ({
-                                                                                                 dateType,
-                                                                                                 setDateType
-                                                                                             }) => {
+export const AvailableHeader = ({}) => {
 
+    const dispatch = useDispatch()
+    const {dateCalendarTypeAvailable} = useAppSelector(state => state.global)
     const styles = StyleSheet.create({
         headerContainer: {
             display: "flex",
@@ -35,19 +37,19 @@ export const AvailableHeader: React.FC<{ dateType: CalendarModeModel, setDateTyp
         <Text style={styles.title}>{text.myAvailability}</Text>
         <View style={styles.buttonsWrapper}>
             <TouchableOpacity
-                onPress={() => setDateType(CalendarModeModel.WEEK)}
-                style={[styles.btnStyle, {backgroundColor: dateType === CalendarModeModel.WEEK ? colors.primary : colors.white}]}>
+                onPress={() => dispatch(setDateCalendarTypeAvailable(CalendarModeModel.WEEK))}
+                style={[styles.btnStyle, {backgroundColor: dateCalendarTypeAvailable === CalendarModeModel.WEEK ? colors.primary : colors.white}]}>
                 <Text style={{
                     fontSize: 14,
-                    color: dateType === CalendarModeModel.WEEK ? colors.white : colors.dark
+                    color: dateCalendarTypeAvailable === CalendarModeModel.WEEK ? colors.white : colors.dark
                 }}>{text.thisWeek}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => setDateType(CalendarModeModel.MONTH)}
-                style={[styles.btnStyle, {backgroundColor: dateType === CalendarModeModel.MONTH ? colors.primary : colors.white}]}>
+                onPress={() => dispatch(setDateCalendarTypeAvailable(CalendarModeModel.MONTH))}
+                style={[styles.btnStyle, {backgroundColor: dateCalendarTypeAvailable === CalendarModeModel.MONTH ? colors.primary : colors.white}]}>
                 <Text style={{
                     fontSize: 14,
-                    color: dateType === CalendarModeModel.MONTH ? colors.white : colors.dark
+                    color: dateCalendarTypeAvailable === CalendarModeModel.MONTH ? colors.white : colors.dark
                 }}>{text.thisMonth}</Text>
             </TouchableOpacity>
         </View>
