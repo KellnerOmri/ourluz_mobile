@@ -54,7 +54,7 @@ export const isEventHasFullBooking = (event: EventModel | undefined) => {
 
 export const checkIfUserIsAvailabilityToEvent = (currentUser: UserModel | undefined, userList: { id: number, booked: boolean, roleId: number | null }[]) => {
     let isAvailable = false
-    userList.forEach((u) => {
+    userList?.forEach((u) => {
         if (u.id === currentUser?.id) {
             isAvailable = true
         }

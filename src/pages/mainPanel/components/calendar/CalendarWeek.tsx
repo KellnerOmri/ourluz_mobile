@@ -96,7 +96,7 @@ export const CalendarWeek: React.FC<Props> = props => {
             let thereIsEventsInThisDate: EventModel[] = [];
             thereIsEventsInThisDate = eventsByDates[moment(day).format("yyyy-MM-DD")];
 
-            return <View style={styles.dayOfWeek}>
+            return <View style={styles.dayOfWeek} key={index}>
                 {thereIsEventsInThisDate && thereIsEventsInThisDate.length ? thereIsEventsInThisDate.map((eventInDay, index) => {
                         const eventUserBooked: { id: number, booked: boolean, roleId: number | null }[] = eventInDay.users.filter((u) => u.booked);
 

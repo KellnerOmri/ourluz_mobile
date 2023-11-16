@@ -346,6 +346,7 @@ export const unBookedUser = async (eventId: number, userId: number) => {
 
 
 export const setAvailabilityToEvent = async (eventId: number) => {
+    console.log("im here ", eventId)
     try {
         await axios.post(`${mainPath}yoman/users/currentUser`, {
             eventId: eventId
