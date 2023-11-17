@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
 import {getLastDateOfWeek, getUserById} from "../../../../utils/general";
 import {colors} from "../../../../utils/colors";
@@ -30,7 +30,7 @@ interface Props {
 }
 
 export const CalendarWeek: React.FC<Props> = props => {
-    const {currentUser, eventsByDates, currentDay, changeCurrentDay, isSelectedDay, firstDayOfWeek} = props;
+    const {eventsByDates, firstDayOfWeek} = props;
     const lastDayOfWeek: Date = getLastDateOfWeek(firstDayOfWeek);
     const dispatch = useDispatch();
     const generateDateRange = (startDate: Date, endDate: Date): string[] => {
@@ -80,7 +80,8 @@ export const CalendarWeek: React.FC<Props> = props => {
         }, label: {
             color: colors.dark,
             fontSize: 8,
-            fontWeight: "600"
+            fontWeight: "600",
+            textAlign: "right"
         },
         valueStyle: {
             color: colors.white,

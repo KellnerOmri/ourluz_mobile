@@ -136,7 +136,6 @@ export const Calendar = () => {
 
     useEffect(() => {
         setSelectedAvailabilityEvent(isAvailable ? UserEventStatus.available : UserEventStatus.nothing)
-        console.log(isAvailable, "isAvailable")
     }, [selectedEvent])
 
     const addAvailabilityEvent = async () => {
@@ -210,7 +209,7 @@ export const Calendar = () => {
             flexDirection: "row",
             gap: 10
         },
-        eventDetailsLabel: {},
+        eventDetailsLabel: {textAlign: "right"},
         eventDetailsValue: {}
     });
     return <View style={styles.calendarContainer}>

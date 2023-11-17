@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
 import {colors} from "../../../../utils/colors";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
@@ -58,7 +58,7 @@ export const CalendarMonth: React.FC<Props> = props => {
 
     const styles = StyleSheet.create({
         calendarDaysContainer: {
-            width: "100%",
+            width: "100.01%",
             height: "75%",
             display: "flex",
             flexDirection: "row",
@@ -79,7 +79,8 @@ export const CalendarMonth: React.FC<Props> = props => {
         eventName: {
             paddingRight: 2,
             fontSize: 8,
-            color: colors.white
+            color: colors.white,
+            textAlign: "right"
         },
         moreEvents: {
             color: colors.primary,
