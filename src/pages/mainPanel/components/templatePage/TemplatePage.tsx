@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {FlatList, StyleSheet, Text, View} from "react-native";
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {TemplateHeader} from "./TemplateHeader";
 import {useAppSelector} from "../../../../app/hooks";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
@@ -9,6 +9,7 @@ import {getAllEventsByDates} from "../../../../utils/data-management";
 import {AvailableRow} from "./AvailableRow";
 import {SelectedPage} from "../../../../utils/enum.const";
 import {MyShiftRow} from "./MyShiftRow";
+import {colors} from "../../../../utils/colors";
 
 export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selectedPage}) => {
     const {currentUser, weeklyEventList, dateCalendarTypeAvailable} = useAppSelector(state => state.global)
@@ -56,6 +57,7 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
             display: "flex",
             flexDirection: "row",
             justifyContent: "center",
+            alignItems: "center",
             padding: 4,
             gap: 10
         },
@@ -68,6 +70,15 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
             height: "70%",
             display: "flex",
             gap: 10
+        },
+        arrowDate: {
+            backgroundColor: colors.lightSkyBlue,
+            borderRadius: 8,
+            width: 30,
+            height: 30,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
         }
     });
     const checkIfUserIsBookedToEvent = (userList: { id: number, booked: boolean, roleId: number | null }[]) => {
@@ -114,13 +125,20 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
             />
         );
     };
-
+    const NEXT = ">"
+    const PREV = "<"
     return <View>
         <TemplateHeader selectedPage={selectedPage}/>
         <View style={styles.timeRange}>
+            <TouchableOpacity style={styles.arrowDate}
+                              onPress={() => console.log("prev")}><Text>{PREV}</Text></TouchableOpacity>
+
             <Text style={styles.rangeText}>{moment(datesRange.startDate).format("DD/MM/YY")}</Text>
             <Text style={styles.rangeText}>-</Text>
             <Text style={styles.rangeText}>{moment(datesRange.endDate).format("DD/MM/YY")}</Text>
+
+            <TouchableOpacity style={styles.arrowDate}
+                              onPress={() => console.log("next")}><Text>{NEXT}</Text></TouchableOpacity>
         </View>
         <View style={styles.listOfRowWrapper}>
             {filteredEvents.length > 0 ?

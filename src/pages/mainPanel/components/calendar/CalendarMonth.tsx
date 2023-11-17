@@ -121,8 +121,6 @@ export const CalendarMonth: React.FC<Props> = props => {
                         {thereIsEventsInThisDate.map((eventModal, index) => {
                             return index < 4 ?
                                 <View key={`${moment(day.date).format("yyyy-MM-DD")}-${index}`}
-                                    // onPress={() => console.log("im here")}
-                                    // dispatch(setSelectedEvent(eventModal))
                                       style={{backgroundColor: getColorByStatus(getStatusEventForClient(eventModal.users, currentUser))}}>
                                     <Text ellipsizeMode={"tail"}
                                           numberOfLines={thereIsEventsInThisDate.length > 2 ? 1 : 2}
@@ -133,7 +131,6 @@ export const CalendarMonth: React.FC<Props> = props => {
                                                       onPress={() => {
                                                           if (day.currentMonth) {
                                                               changeCurrentDay(day)
-                                                              console.log("asdfasdf")
                                                               dispatch(setCalendarModeModel(CalendarModeModel.DAY))
                                                           } else {
                                                               changeCurrentDay(day)

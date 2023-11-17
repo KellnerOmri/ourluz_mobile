@@ -78,7 +78,6 @@ export const LoginPage = () => {
             const userToken = await AsyncStorage.getItem('userToken');
             if (userToken !== null) {
                 // User token is retrieved successfully
-                console.log('User Token:', userToken);
                 await checkIfUserConnected(userToken);
             } else {
                 // User token does not exist in AsyncStorage
