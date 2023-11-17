@@ -5,7 +5,7 @@ import {colors} from "../../utils/colors";
 import {Calendar} from "./components/calendar/Calendar";
 import {useAppSelector} from "../../app/hooks";
 import {useDispatch} from "react-redux";
-import {SelectedPage, SelectedPopup} from "../../utils/enum.const";
+import {SelectedPage} from "../../utils/enum.const";
 import {setSelectedPage} from "../../store/global.slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {setToken} from "../../store/authentication.slice";
@@ -32,7 +32,6 @@ export const MainPanel = () => {
         }, organizationText: {
             fontSize: 16,
             fontWeight: "300",
-            // fontFamily: "RussoOne-Regular"
         }, buttonsWrapper: {
             display: "flex",
             flexDirection: "row",
@@ -72,20 +71,13 @@ export const MainPanel = () => {
         }
     });
 
-    // const {
-    //     selectedEvent,
-    //     selectedPopup,
-    //     isMobile,
-    //     isAdmin,
-    //     currentUser
-    // } = useAppSelector(state => state.global);
+
     useEffect(() => {
         getAllEventsByOrganization().then()
         getAllRolesByOrganization().then()
         isUserIsManager().then()
         getAllUsers().then()
     }, [])
-    // }, [selectedPopup])
 
     const signOut = async () => {
         try {
@@ -96,7 +88,6 @@ export const MainPanel = () => {
         }
         dispatch(setToken(undefined))
     }
-
     return <View style={{height: "100%", width: "100%"}}>
         <View style={{height: "12%"}}><Header/></View>
         <View style={styles.organizationHeader}><Text style={styles.organizationText}>4SPORT</Text></View>

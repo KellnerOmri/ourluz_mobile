@@ -17,7 +17,6 @@ export const AvailableRow: React.FC<{ eventDetails: EventModel, isAvailable: boo
     const [openDropDown, setOpenDropDown] = useState(false)
 
     const [selectedAvailabilityEvent, setSelectedAvailabilityEvent] = useState(isAvailable)
-    console.log(eventDetails, "eventDetails4")
     const addAvailabilityEvent = async () => {
         await setAvailabilityToEvent(eventDetails.id).then()
         setSelectedAvailabilityEvent(true)

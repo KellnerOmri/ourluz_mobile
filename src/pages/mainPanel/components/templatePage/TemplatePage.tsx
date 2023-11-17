@@ -51,9 +51,6 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
         getAllEventsFunction().then()
     }, [datesRange])
 
-    console.log(weeklyEventList, "weeklyEventList")
-
-
     const styles = StyleSheet.create({
         timeRange: {
             display: "flex",
@@ -82,6 +79,8 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
         })
         return isBooked
     }
+    
+
     const filteredEvents = useMemo(() => {
         if (selectedPage === SelectedPage.MyAvailabilityPage) {
             return Object.keys(weeklyEventList)
@@ -91,7 +90,6 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
         } else if (selectedPage === SelectedPage.MyShiftPage) {
             return Object.keys(weeklyEventList).filter((eventKey) => checkIfUserIsBookedToEvent(weeklyEventList[eventKey]?.users ?? false))
         } else return []
-
     }, [weeklyEventList])
 
     const renderItemMyActivity = ({item, index}: { item: string; index: number }) => {
@@ -130,9 +128,11 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
                     data={filteredEvents}
                     keyExtractor={(item) => item}
                     renderItem={selectedPage === SelectedPage.MyShiftPage ? renderItemMyShift : renderItemMyActivity}
-                /> :
+                />
+                :
                 <View style={{display: "flex", flexDirection: "row", justifyContent: "center", marginTop: 20}}><Text
-                    style={{fontSize: 18, fontWeight: "700"}}>אינך משובץ לאירועים בתאריכים אלו</Text></View>}
+                    style={{fontSize: 18, fontWeight: "700"}}>אינך משובץ לאירועים בתאריכים אלו</Text></View>
+            }
 
         </View>
     </View>
