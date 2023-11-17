@@ -122,6 +122,7 @@ export const CalendarWeek: React.FC<Props> = props => {
                                 style={styles.label}>{text.employeeList}:</Text>
                                 {eventUserBooked && eventUserBooked.length > 0 && eventUserBooked.map((user, index) => {
                                     return <Text
+                                        key={index}
                                         style={[styles.valueStyle, {fontSize: 10}]}>{getUserById(user.id)?.firstName} {"." + getUserById(user.id)?.lastName[0]}</Text>
                                 })}
                                 {eventUserBooked && eventUserBooked.length === 0 &&

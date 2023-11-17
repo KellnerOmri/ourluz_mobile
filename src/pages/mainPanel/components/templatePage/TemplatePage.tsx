@@ -1,16 +1,17 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {FlatList, StyleSheet, Text, View} from "react-native";
-import {AvailableHeader} from "./AvailableHeader";
+import {TemplateHeader} from "./TemplateHeader";
 import {useAppSelector} from "../../../../app/hooks";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
 import {checkIfUserIsAvailabilityToEvent, getFirstDayOfWeek, getLastDateOfWeek} from "../../../../utils/general";
 import moment from "moment";
 import {getAllEventsByDates} from "../../../../utils/data-management";
 import {AvailableRow} from "./AvailableRow";
+import {SelectedPage} from "../../../../utils/enum.const";
+import {MyShiftRow} from "./MyShiftRow";
 
-export const AvailablePage = () => {
+export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selectedPage}) => {
     const {currentUser, weeklyEventList, dateCalendarTypeAvailable} = useAppSelector(state => state.global)
-    // const [dateType, setDateType] = useState<CalendarModeModel>(CalendarModeModel.WEEK)
     const [datesRange, setDatesRange] = useState<{ startDate: string, endDate: string }>({
         startDate: moment(getFirstDayOfWeek(new Date())).format("yyyy-MM-DD"),
         endDate: moment(getLastDateOfWeek(getFirstDayOfWeek(new Date()))).format("yyyy-MM-DD")
@@ -23,7 +24,6 @@ export const AvailablePage = () => {
         // To get the first day of the next month, set the day to 0
         // This will result in the last day of the current month
         const lastDayOfMonth = new Date(year, month, 0);
-
         return lastDayOfMonth;
     }
 
@@ -73,16 +73,28 @@ export const AvailablePage = () => {
             gap: 10
         }
     });
-
+    const checkIfUserIsBookedToEvent = (userList: { id: number, booked: boolean, roleId: number | null }[]) => {
+        let isBooked = false
+        userList.forEach((u) => {
+            if (u.id === currentUser?.id && u.booked) {
+                isBooked = true
+            }
+        })
+        return isBooked
+    }
     const filteredEvents = useMemo(() => {
-        return Object.keys(weeklyEventList)
-            .filter((eventItem) => {
-                return new Date(weeklyEventList[eventItem].start) >= new Date();
-            })
+        if (selectedPage === SelectedPage.MyAvailabilityPage) {
+            return Object.keys(weeklyEventList)
+                .filter((eventItem) => {
+                    return new Date(weeklyEventList[eventItem].start) >= new Date();
+                })
+        } else if (selectedPage === SelectedPage.MyShiftPage) {
+            return Object.keys(weeklyEventList).filter((eventKey) => checkIfUserIsBookedToEvent(weeklyEventList[eventKey]?.users ?? false))
+        } else return []
+
     }, [weeklyEventList])
 
-    console.log(filteredEvents, "filteredEvents")
-    const renderItem = ({item, index}: { item: string; index: number }) => {
+    const renderItemMyActivity = ({item, index}: { item: string; index: number }) => {
         const eventKey = item;
         return (
             <AvailableRow
@@ -95,23 +107,29 @@ export const AvailablePage = () => {
             />
         );
     };
+    const renderItemMyShift = ({item, index}: { item: string; index: number }) => {
+        const eventKey = item;
+        return (
+            <MyShiftRow
+                key={index}
+                eventDetails={weeklyEventList[eventKey]}
+            />
+        );
+    };
 
     return <View>
-        <AvailableHeader/>
-        {/*// dateType={dateType} setDateType={setDateType}*/}
+        <TemplateHeader selectedPage={selectedPage}/>
         <View style={styles.timeRange}>
             <Text style={styles.rangeText}>{moment(datesRange.startDate).format("DD/MM/YY")}</Text>
             <Text style={styles.rangeText}>-</Text>
             <Text style={styles.rangeText}>{moment(datesRange.endDate).format("DD/MM/YY")}</Text>
         </View>
-
-
         <View style={styles.listOfRowWrapper}>
             {filteredEvents.length > 0 ?
                 <FlatList
                     data={filteredEvents}
                     keyExtractor={(item) => item}
-                    renderItem={renderItem}
+                    renderItem={selectedPage === SelectedPage.MyShiftPage ? renderItemMyShift : renderItemMyActivity}
                 /> :
                 <View style={{display: "flex", flexDirection: "row", justifyContent: "center", marginTop: 20}}><Text
                     style={{fontSize: 18, fontWeight: "700"}}>אינך משובץ לאירועים בתאריכים אלו</Text></View>}

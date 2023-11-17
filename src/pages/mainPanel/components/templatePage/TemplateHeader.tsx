@@ -6,10 +6,20 @@ import {CalendarModeModel} from "../../../../models/calendar-mode.model";
 import {useAppSelector} from "../../../../app/hooks";
 import {setDateCalendarTypeAvailable} from "../../../../store/global.slice";
 import {useDispatch} from "react-redux";
+import {SelectedPage} from "../../../../utils/enum.const";
 
 
-export const AvailableHeader = ({}) => {
-
+export const TemplateHeader: React.FC<{ selectedPage: SelectedPage }> = ({selectedPage}) => {
+    const getTitleByPage = () => {
+        switch (selectedPage) {
+            case SelectedPage.MyAvailabilityPage:
+                return text.myAvailability;
+            case SelectedPage.MyShiftPage:
+                return text.myShift
+            default:
+                return "unknow page"
+        }
+    }
     const dispatch = useDispatch()
     const {dateCalendarTypeAvailable} = useAppSelector(state => state.global)
     const styles = StyleSheet.create({
@@ -34,7 +44,7 @@ export const AvailableHeader = ({}) => {
         }
     });
     return <View style={styles.headerContainer}>
-        <Text style={styles.title}>{text.myAvailability}</Text>
+        <Text style={styles.title}>{getTitleByPage()}</Text>
         <View style={styles.buttonsWrapper}>
             <TouchableOpacity
                 onPress={() => dispatch(setDateCalendarTypeAvailable(CalendarModeModel.WEEK))}
@@ -53,8 +63,5 @@ export const AvailableHeader = ({}) => {
                 }}>{text.thisMonth}</Text>
             </TouchableOpacity>
         </View>
-
     </View>
-
-
 }

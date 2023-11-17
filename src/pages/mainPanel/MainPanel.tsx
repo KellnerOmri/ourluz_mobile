@@ -15,7 +15,7 @@ import {
     getAllUsers,
     isUserIsManager
 } from "../../utils/data-management";
-import {AvailablePage} from "./components/availablePage/AvailablePage";
+import {TemplatePage} from "./components/templatePage/TemplatePage";
 
 export const MainPanel = () => {
     const dispatch = useDispatch()
@@ -102,8 +102,9 @@ export const MainPanel = () => {
         <View style={styles.organizationHeader}><Text style={styles.organizationText}>4SPORT</Text></View>
         {selectedPage === SelectedPage.MainPanel && <View style={{height: "75%"}}><Calendar/></View>}
         {selectedPage === SelectedPage.MyAvailabilityPage &&
-            <View style={{height: "75%"}}><AvailablePage/></View>}
-        {selectedPage === SelectedPage.MyShiftPage && <View style={{height: "75%"}}><Text>shift page</Text></View>}
+            <View style={{height: "75%"}}><TemplatePage selectedPage={selectedPage}/></View>}
+        {selectedPage === SelectedPage.MyShiftPage &&
+            <View style={{height: "75%"}}><TemplatePage selectedPage={selectedPage}/></View>}
         <View style={styles.footer}>
             <TouchableOpacity
                 onPress={() => dispatch(setSelectedPage(SelectedPage.MyAvailabilityPage))}
