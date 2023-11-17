@@ -1,5 +1,5 @@
 import {EventModel} from "./event.model";
-import {SelectedPage, SelectedPopup} from "../utils/enum.const";
+import {SelectedPage, SelectedPopup, UserEventStatus} from "../utils/enum.const";
 import {RollModel} from "./roll.model";
 import {UserModel} from "./user.model";
 import {CalendarModeModel} from "./calendar-mode.model";

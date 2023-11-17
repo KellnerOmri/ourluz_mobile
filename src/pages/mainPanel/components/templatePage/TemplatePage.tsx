@@ -79,7 +79,7 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
         })
         return isBooked
     }
-    
+
 
     const filteredEvents = useMemo(() => {
         if (selectedPage === SelectedPage.MyAvailabilityPage) {

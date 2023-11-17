@@ -325,7 +325,7 @@ export const editBookedUserRoll = async (eventId: number, userId: number, roleId
         });
         return response
     } catch (e) {
-        console.log(e, "error3")
+        console.log(e, "error33")
         return e
     }
 }
@@ -356,7 +356,7 @@ export const setAvailabilityToEvent = async (eventId: number) => {
             }
         });
     } catch (e) {
-        console.log(e, "error3")
+        console.log(e, "error32")
     }
 }
 
@@ -371,7 +371,7 @@ export const removeAvailabilityFromEvent = async (eventId: number) => {
             }
         });
     } catch (e) {
-        console.log(e, "error3")
+        console.log(e, "error31")
     }
 }
 
@@ -385,7 +385,7 @@ export const sendLinkAsSms = async (fromDate: string) => {
             }
         });
     } catch (e) {
-        console.log(e, "error3")
+        console.log(e, "error30")
     }
 }
 
@@ -397,7 +397,7 @@ export const forgetPasswordSendVerifyCode = async (userName: string) => {
         });
         return response
     } catch (e) {
-        console.log(e, "error3")
+        console.log(e, "error41")
         return false
     }
 }
@@ -411,7 +411,7 @@ export const checkVerifyCode = async (pinCode: string, userName: string) => {
         });
         return response;
     } catch (e) {
-        console.log(e, "error3")
+        console.log(e, "error42")
         return false
     }
 }
@@ -426,7 +426,7 @@ export const changePassword = async (token: string, newPassword: string) => {
         });
         return response;
     } catch (e) {
-        console.log(e, "error3")
+        console.log(e, "error43")
         return e
     }
 }

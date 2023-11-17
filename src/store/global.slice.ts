@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {GlobalSliceModel} from "../models/global-slice.model";
 import {EventModel} from "../models/event.model";
-import {SelectedPage, SelectedPopup} from "../utils/enum.const";
+import {SelectedPage, SelectedPopup, UserEventStatus} from "../utils/enum.const";
 import {RollModel} from "../models/roll.model";
 import {UserModel} from "../models/user.model";
 import {CalendarModeModel} from "../models/calendar-mode.model";

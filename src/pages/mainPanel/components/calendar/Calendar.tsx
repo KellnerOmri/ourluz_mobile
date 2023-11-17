@@ -8,6 +8,7 @@ import {setCalendarModeModel, setSelectedEvent} from "../../../../store/global.s
 import {useDispatch} from "react-redux";
 import {CalendarWeek} from "./CalendarWeek";
 import {
+    checkIfUserIsAvailabilityToEvent,
     convertToTwoDigitsDate,
     getFirstDayOfWeek,
     getLastDateOfWeek,
@@ -26,7 +27,13 @@ import {UserEventStatus} from "../../../../utils/enum.const";
 
 export const Calendar = () => {
     const [openBookedModal, setOpenBookedModal] = useState(true)
-    const {calendarModeModel, eventList, selectedEvent, currentUser} = useAppSelector(state => state.global)
+    const {
+        calendarModeModel,
+        weeklyEventList,
+        eventList,
+        selectedEvent,
+        currentUser
+    } = useAppSelector(state => state.global)
     const dispatch = useDispatch()
     const [isSelectedDay, setSelectedDate] = useState<boolean>(false);
     const [currentDay, setCurrentDay] = useState<Date>(new Date());
@@ -118,7 +125,19 @@ export const Calendar = () => {
         }
 
     }
-    const [selectedAvailabilityEvent, setSelectedAvailabilityEvent] = useState(getStatusEventForClient((selectedEvent as EventModel)?.users ?? [], currentUser))
+    const isAvailable = useMemo(() => {
+        return checkIfUserIsAvailabilityToEvent(
+            currentUser,
+            weeklyEventList[(selectedEvent as EventModel)?.id]?.users
+        )
+    }, [selectedEvent])
+
+    const [selectedAvailabilityEvent, setSelectedAvailabilityEvent] = useState(isAvailable ? UserEventStatus.available : UserEventStatus.nothing)
+
+    useEffect(() => {
+        setSelectedAvailabilityEvent(isAvailable ? UserEventStatus.available : UserEventStatus.nothing)
+        console.log(isAvailable, "isAvailable")
+    }, [selectedEvent])
 
     const addAvailabilityEvent = async () => {
         await setAvailabilityToEvent((selectedEvent as EventModel).id).then()
@@ -127,6 +146,7 @@ export const Calendar = () => {
     const removeAvailabilityEvent = async () => {
         await removeAvailabilityFromEvent((selectedEvent as EventModel).id).then()
         setSelectedAvailabilityEvent(UserEventStatus.nothing)
+
     }
     const styles = StyleSheet.create({
         calendarContainer: {
