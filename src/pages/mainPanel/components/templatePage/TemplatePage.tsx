@@ -180,7 +180,6 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
                 return ""
         }
     }
-    console.log(datesRange, "dateRange")
     return <View>
         <TemplateHeader selectedPage={selectedPage}/>
         <View style={styles.timeRange}>
