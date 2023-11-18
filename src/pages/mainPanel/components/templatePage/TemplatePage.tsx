@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {TemplateHeader} from "./TemplateHeader";
 import {useAppSelector} from "../../../../app/hooks";
-import {CalendarModeModel} from "../../../../models/calendar-mode.model";
+import {ActionTimeType, CalendarModeModel} from "../../../../models/calendar-mode.model";
 import {checkIfUserIsAvailabilityToEvent, getFirstDayOfWeek, getLastDateOfWeek} from "../../../../utils/general";
 import moment from "moment";
 import {getAllEventsByDates} from "../../../../utils/data-management";
@@ -127,18 +127,72 @@ export const TemplatePage: React.FC<{ selectedPage: SelectedPage }> = ({selected
     };
     const NEXT = ">"
     const PREV = "<"
+
+    const changeRangeDate = (actionType: ActionTimeType, timeType: CalendarModeModel.WEEK | CalendarModeModel.MONTH) => {
+        switch (timeType) {
+            case CalendarModeModel.WEEK: {
+                if (actionType === ActionTimeType.NEXT) {
+                    let nextWeekStartDate = new Date(datesRange.startDate)
+                    nextWeekStartDate.setDate(nextWeekStartDate.getDate() + 7)
+                    let nextWeekEndDate = new Date(datesRange.endDate)
+                    nextWeekEndDate.setDate(nextWeekEndDate.getDate() + 14)
+                    setDatesRange({
+                        startDate: moment(nextWeekStartDate).format("yyyy-MM-DD"),
+                        endDate: moment(nextWeekEndDate).format("yyyy-MM-DD")
+                    })
+                }
+                //prev week
+                else {
+                    let prevWeekStartDate = new Date(datesRange.startDate)
+                    prevWeekStartDate.setDate(prevWeekStartDate.getDate() - 7)
+                    let prevWeekEndDate = new Date(datesRange.endDate)
+                    prevWeekEndDate.setDate(prevWeekEndDate.getDate() - 14)
+                    setDatesRange({
+                        startDate: moment(prevWeekStartDate).format("yyyy-MM-DD"),
+                        endDate: moment(prevWeekEndDate).format("yyyy-MM-DD")
+                    })
+                }
+            }
+                break
+            case CalendarModeModel.MONTH: {
+                if (actionType === ActionTimeType.NEXT) {
+                    let nextMonthStartDate = new Date(datesRange.startDate)
+                    nextMonthStartDate.setMonth(nextMonthStartDate.getMonth() + 1)
+                    let nextMonthEndDate = new Date(datesRange.endDate)
+                    nextMonthEndDate.setMonth(nextMonthEndDate.getMonth() + 1)
+                    setDatesRange({
+                        startDate: moment(nextMonthStartDate).format("yyyy-MM-DD"),
+                        endDate: moment(nextMonthEndDate).format("yyyy-MM-DD")
+                    })
+                } else {
+                    let prevMonthStartDate = new Date(datesRange.startDate)
+                    prevMonthStartDate.setMonth(prevMonthStartDate.getMonth() - 1)
+                    let prevMonthEndDate = new Date(datesRange.endDate)
+                    prevMonthEndDate.setMonth(prevMonthEndDate.getMonth() - 1)
+                    setDatesRange({
+                        startDate: moment(prevMonthStartDate).format("yyyy-MM-DD"),
+                        endDate: moment(prevMonthEndDate).format("yyyy-MM-DD")
+                    })
+                }
+            }
+                break
+            default:
+                return ""
+        }
+    }
+    console.log(datesRange, "dateRange")
     return <View>
         <TemplateHeader selectedPage={selectedPage}/>
         <View style={styles.timeRange}>
             <TouchableOpacity style={styles.arrowDate}
-                              onPress={() => console.log("prev")}><Text>{PREV}</Text></TouchableOpacity>
+                              onPress={() => changeRangeDate(ActionTimeType.PREV, dateCalendarTypeAvailable === CalendarModeModel.WEEK ? CalendarModeModel.WEEK : CalendarModeModel.MONTH)}><Text>{PREV}</Text></TouchableOpacity>
 
             <Text style={styles.rangeText}>{moment(datesRange.startDate).format("DD/MM/YY")}</Text>
             <Text style={styles.rangeText}>-</Text>
             <Text style={styles.rangeText}>{moment(datesRange.endDate).format("DD/MM/YY")}</Text>
 
             <TouchableOpacity style={styles.arrowDate}
-                              onPress={() => console.log("next")}><Text>{NEXT}</Text></TouchableOpacity>
+                              onPress={() => changeRangeDate(ActionTimeType.NEXT, dateCalendarTypeAvailable === CalendarModeModel.WEEK ? CalendarModeModel.WEEK : CalendarModeModel.MONTH)}><Text>{NEXT}</Text></TouchableOpacity>
         </View>
         <View style={styles.listOfRowWrapper}>
             {filteredEvents.length > 0 ?
