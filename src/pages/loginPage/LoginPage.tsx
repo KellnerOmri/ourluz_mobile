@@ -34,12 +34,20 @@ export const LoginPage = () => {
             backgroundColor: colors.primary,
             height: "100%",
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "space-around",
+            width: "100%",
+            alignItems: "center"
+        },
+        mainLogIn: {
+            flex: 1,
+            marginTop: "20%",
+            backgroundColor: colors.primary,
+            display: "flex",
             width: "100%",
             alignItems: "center"
         },
         logo: {
-            width: 250, height: 250
+            width: 150, height: 150
         },
         textInput: {
             display: "flex",
@@ -68,6 +76,8 @@ export const LoginPage = () => {
         },
         submitText: {
             textAlign: "center", color: colors.white, fontWeight: "600"
+        }, logoWrapper: {
+            marginTop: 10
         }
     });
     const checkIfUserConnected = async (token: string) => {
@@ -143,32 +153,38 @@ export const LoginPage = () => {
 
 
     return <View style={styles.container}>
-        <Image style={styles.logo} source={require("../../assets/images/ourLuzLogo.png")}/>
-        <View style={styles.inputWrapper}>
-            <View style={styles.textInput}><TextInput style={{width: "80%"}} placeholder={"Username"} value={username}
-                                                      onChangeText={setUsername}></TextInput>
-                {username.length > 0 && <TouchableOpacity style={{width: 20}} onPress={() => setUsername("")}><Image
-                    style={{width: 15, height: 15}}
-                    source={require("../../assets/icons/close.png")}/></TouchableOpacity>}
+        <View style={styles.mainLogIn}>
+
+
+            <View style={styles.inputWrapper}>
+                <View style={styles.textInput}><TextInput style={{width: "80%"}} placeholder={"Username"}
+                                                          value={username}
+                                                          onChangeText={setUsername}></TextInput>
+                    {username.length > 0 && <TouchableOpacity style={{width: 20}} onPress={() => setUsername("")}><Image
+                        style={{width: 15, height: 15}}
+                        source={require("../../assets/icons/close.png")}/></TouchableOpacity>}
+                </View>
+                <View style={styles.textInput}><TextInput secureTextEntry={true} style={{width: "80%"}}
+                                                          placeholder={"Password"} value={password}
+                                                          onChangeText={setPassword}></TextInput>
+                    {password.length > 0 &&
+                        <TouchableOpacity onPress={() => setPassword("")}><Image style={{width: 15, height: 15}}
+                                                                                 source={require("../../assets/icons/close.png")}/></TouchableOpacity>}
+                </View>
             </View>
-            <View style={styles.textInput}><TextInput secureTextEntry={true} style={{width: "80%"}}
-                                                      placeholder={"Password"} value={password}
-                                                      onChangeText={setPassword}></TextInput>
-                {password.length > 0 &&
-                    <TouchableOpacity onPress={() => setPassword("")}><Image style={{width: 15, height: 15}}
-                                                                             source={require("../../assets/icons/close.png")}/></TouchableOpacity>}
+
+            <TouchableOpacity onPress={() => handleSubmit()} style={styles.submitButton}><Text
+                style={styles.submitText}>התחבר</Text></TouchableOpacity>
+            <TouchableOpacity onPress={async () => {
+                username.length > 0 ? await pressForgetPassword() : setUsernameDoesntWrote(true)
+            }} style={styles.forgetPassword}><Text
+                style={styles.forgetPassText}>שככחתי את
+                הסיסמא</Text></TouchableOpacity>
+            <View style={styles.logoWrapper}>
+                <Image style={styles.logo} source={require("../../assets/images/ourLuzLogo.png")}/>
             </View>
         </View>
-
-        <TouchableOpacity onPress={() => handleSubmit()} style={styles.submitButton}><Text
-            style={styles.submitText}>התחבר</Text></TouchableOpacity>
-        <TouchableOpacity onPress={async () => {
-            username.length > 0 ? await pressForgetPassword() : setUsernameDoesntWrote(true)
-        }} style={styles.forgetPassword}><Text
-            style={styles.forgetPassText}>שככחתי את
-            הסיסמא</Text></TouchableOpacity>
         <View style={styles.version}><Text style={styles.versionText}>Version {packageJson.version}</Text></View>
-
         {/*error submit modal*/}
         <Modal
             style={{
