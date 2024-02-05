@@ -73,6 +73,10 @@ export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[] }
                 return <TouchableOpacity onPress={() => dispatch(setSelectedEvent(e))} key={index}
                                          style={styles.dayWrapper}>
                     <View style={styles.row}>
+                        <Text style={styles.val}>{e.description}</Text>
+                        <Text style={styles.label}>{text.description}:</Text>
+                    </View>
+                    <View style={styles.row}>
                         <Text style={styles.val}>{e.location}</Text>
                         <Text style={styles.label}>{text.location}:</Text>
                     </View>
