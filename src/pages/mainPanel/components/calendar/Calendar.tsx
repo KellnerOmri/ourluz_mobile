@@ -160,16 +160,17 @@ export const Calendar = () => {
             width: "100%",
             justifyContent: "space-between"
         }, selectCalendarModeButtons: {
-            width: "40%",
+            width: "45%",
             marginTop: 2,
             display: "flex",
             flexDirection: "row",
             borderStyle: "solid",
             borderWidth: 0.5,
-            borderRadius: 4,
-            height: 30,
+            borderRadius: 3,
+            height: 35,
             borderColor: colors.darkGrey,
         }, selectDateModeBtn: {
+            borderRadius: 3,
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
@@ -195,8 +196,8 @@ export const Calendar = () => {
         }, arrowDate: {
             backgroundColor: colors.lightSkyBlue,
             borderRadius: 8,
-            width: 30,
-            height: 30,
+            width: 35,
+            height: 35,
             display: "flex",
             alignItems: "center"
             , justifyContent: "center"
@@ -232,7 +233,7 @@ export const Calendar = () => {
                     style={{color: calendarModeModel === CalendarModeModel.DAY ? colors.white : colors.darkGrey}}>יום</Text></TouchableOpacity>
             </View></View>
 
-        {(calendarModeModel === CalendarModeModel.MONTH || calendarModeModel === CalendarModeModel.WEEK)
+        {(calendarModeModel === CalendarModeModel.MONTH)
             &&
             <View style={styles.weekDays}>
                 {weekdays.map((weekDay, index) => {
@@ -241,7 +242,7 @@ export const Calendar = () => {
                         <Text style={{
                             textAlign: "center",
                             width: "100%",
-                        }}> {weekDay} {calendarModeModel === CalendarModeModel.WEEK ? convertToTwoDigitsDate(dayIndex) : ""}</Text>
+                        }}> {weekDay}</Text>
                     </View>
                 })}
             </View>}

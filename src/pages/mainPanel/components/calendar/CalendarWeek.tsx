@@ -1,14 +1,13 @@
 import React from "react";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {CalendarModeModel} from "../../../../models/calendar-mode.model";
-import {getLastDateOfWeek, getUserById} from "../../../../utils/general";
+import {getLastDateOfWeek} from "../../../../utils/general";
 import {colors} from "../../../../utils/colors";
 import {EventModel} from "../../../../models/event.model";
 import moment from "moment/moment";
-import {text} from "../../../../utils/dictionary-management";
-import {setSelectedEvent} from "../../../../store/global.slice";
 import {useDispatch} from "react-redux";
 import {UserModel} from "../../../../models/user.model";
+import {DayInWeek} from "./day-in-week/DayInWeek";
 
 interface CalendarDay {
     currentMonth: boolean;
@@ -48,6 +47,9 @@ export const CalendarWeek: React.FC<Props> = props => {
 
     const datesArray = generateDateRange(firstDayOfWeek, lastDayOfWeek)
     const styles = StyleSheet.create({
+        dayWrapper: {
+            width: "100%"
+        },
         container: {
             width: "100%",
             display: "flex",
@@ -87,52 +89,66 @@ export const CalendarWeek: React.FC<Props> = props => {
             color: colors.white,
             fontSize: 8,
             textAlign: "right"
+        },
+        calendarWeekContainer: {
+            gap: 5,
+            display: "flex",
+            alignItems: "flex-end"
         }
     });
 
+    const weekdays = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ש׳"];
 
-    return <View style={styles.container}>
-
-        {datesArray.map((day, index) => {
-            let thereIsEventsInThisDate: EventModel[] = [];
-            thereIsEventsInThisDate = eventsByDates[moment(day).format("yyyy-MM-DD")];
-
-            return <View style={styles.dayOfWeek} key={index}>
-                {thereIsEventsInThisDate && thereIsEventsInThisDate.length ? thereIsEventsInThisDate.map((eventInDay, index) => {
-                        const eventUserBooked: { id: number, booked: boolean, roleId: number | null }[] = eventInDay.users.filter((u) => u.booked);
-
-                        return <TouchableOpacity
-                            key={index}
-                            onPress={() => dispatch(setSelectedEvent(eventInDay))}
-                            style={styles.eventContainer}>
-                            <Text style={styles.descriptionText}>{eventInDay.description}</Text>
-                            <View style={styles.lineWrapper}><Text
-                                style={styles.label}>{text.location}:</Text><Text
-                                style={styles.valueStyle}>{eventInDay.location}</Text>
-                            </View>
-                            <View style={styles.lineWrapper}><Text
-                                style={styles.label}>{text.hourTime}:</Text><Text
-                                style={styles.valueStyle}>{moment(eventInDay.start).format("HH:mm")}</Text>
-                            </View>
-                            {eventInDay.comments && eventInDay.comments.length > 0 &&
-                                <View style={styles.lineWrapper}><Text
-                                    style={[styles.label, {color: colors.alert}]}>{text.comments}:</Text><Text
-                                    style={styles.valueStyle}>{eventInDay.comments}</Text>
-                                </View>}
-                            <View style={styles.lineWrapper}><Text
-                                style={styles.label}>{text.employeeList}:</Text>
-                                {eventUserBooked && eventUserBooked.length > 0 && eventUserBooked.map((user, index) => {
-                                    return <Text
-                                        key={index}
-                                        style={[styles.valueStyle, {fontSize: 10}]}>{getUserById(user.id)?.firstName} {"." + getUserById(user.id)?.lastName[0]}</Text>
-                                })}
-                                {eventUserBooked && eventUserBooked.length === 0 &&
-                                    <Text style={[styles.valueStyle, {fontSize: 10}]}>טרם שובצו עובדים</Text>}
-                            </View>
-                        </TouchableOpacity>
-                    }) :
-                    <Text></Text>}
+    return <View style={styles.calendarWeekContainer}>
+        {datesArray.map((day, dayIndex) => {
+            const eventInDay = eventsByDates[moment(day).format("yyyy-MM-DD")]
+            return <View style={styles.dayWrapper} key={dayIndex}>
+                {eventInDay?.length > 0 &&
+                    <DayInWeek eventInDay={eventsByDates[moment(day).format("yyyy-MM-DD")]}
+                               dateLabel={`${weekdays[dayIndex]} ${moment(day).format("MM-DD")}`}/>}
             </View>
         })}
+        {/*<View style={styles.container}>*/}
+        {/*{datesArray.map((day, index) => {*/}
+        {/*    let thereIsEventsInThisDate: EventModel[] = [];*/}
+        {/*    thereIsEventsInThisDate = eventsByDates[moment(day).format("yyyy-MM-DD")];*/}
+
+        {/*    return <View style={styles.dayOfWeek} key={index}>*/}
+        {/*        {thereIsEventsInThisDate && thereIsEventsInThisDate.length ? thereIsEventsInThisDate.map((eventInDay, index) => {*/}
+        {/*                const eventUserBooked: { id: number, booked: boolean, roleId: number | null }[] = eventInDay.users.filter((u) => u.booked);*/}
+
+        {/*                return <TouchableOpacity*/}
+        {/*                    key={index}*/}
+        {/*                    onPress={() => dispatch(setSelectedEvent(eventInDay))}*/}
+        {/*                    style={styles.eventContainer}>*/}
+        {/*                    <Text style={styles.descriptionText}>{eventInDay.description}</Text>*/}
+        {/*                    <View style={styles.lineWrapper}><Text*/}
+        {/*                        style={styles.label}>{text.location}:</Text><Text*/}
+        {/*                        style={styles.valueStyle}>{eventInDay.location}</Text>*/}
+        {/*                    </View>*/}
+        {/*                    <View style={styles.lineWrapper}><Text*/}
+        {/*                        style={styles.label}>{text.hourTime}:</Text><Text*/}
+        {/*                        style={styles.valueStyle}>{moment(eventInDay.start).format("HH:mm")}</Text>*/}
+        {/*                    </View>*/}
+        {/*                    {eventInDay.comments && eventInDay.comments.length > 0 &&*/}
+        {/*                        <View style={styles.lineWrapper}><Text*/}
+        {/*                            style={[styles.label, {color: colors.alert}]}>{text.comments}:</Text><Text*/}
+        {/*                            style={styles.valueStyle}>{eventInDay.comments}</Text>*/}
+        {/*                        </View>}*/}
+        {/*                    <View style={styles.lineWrapper}><Text*/}
+        {/*                        style={styles.label}>{text.employeeList}:</Text>*/}
+        {/*                        {eventUserBooked && eventUserBooked.length > 0 && eventUserBooked.map((user, index) => {*/}
+        {/*                            return <Text*/}
+        {/*                                key={index}*/}
+        {/*                                style={[styles.valueStyle, {fontSize: 10}]}>{getUserById(user.id)?.firstName} {"." + getUserById(user.id)?.lastName[0]}</Text>*/}
+        {/*                        })}*/}
+        {/*                        {eventUserBooked && eventUserBooked.length === 0 &&*/}
+        {/*                            <Text style={[styles.valueStyle, {fontSize: 10}]}>טרם שובצו עובדים</Text>}*/}
+        {/*                    </View>*/}
+        {/*                </TouchableOpacity>*/}
+        {/*            }) :*/}
+        {/*            <Text></Text>}*/}
+        {/*    </View>*/}
+        {/*})}*/}
     </View>
 }

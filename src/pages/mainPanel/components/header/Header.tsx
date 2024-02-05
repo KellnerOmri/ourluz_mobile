@@ -9,7 +9,7 @@ export const Header = () => {
         container: {
             width: "100%",
             paddingVertical: 4,
-            marginTop: "5%",
+            marginTop: "10%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -17,10 +17,8 @@ export const Header = () => {
         }, title: {
             color: colors.white,
             fontSize: 24,
-            // fontFamily: "RussoOne-Regular",
         }, subTitle: {
             fontStyle: "italic",
-            // fontFamily: "RussoOne-Regular",
             color: colors.wolf,
             fontSize: 18
         }

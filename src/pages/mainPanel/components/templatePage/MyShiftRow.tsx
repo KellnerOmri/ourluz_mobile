@@ -8,6 +8,7 @@ import {getUserById} from "../../../../utils/general";
 
 export const MyShiftRow: React.FC<{ eventDetails: EventModel }> = ({eventDetails}) => {
     return <View style={{
+        alignItems: "flex-end",
         padding: 4,
         backgroundColor: eventDetails.backgroundColor,
         borderBottomWidth: 2,
@@ -17,7 +18,7 @@ export const MyShiftRow: React.FC<{ eventDetails: EventModel }> = ({eventDetails
         <Text>{text.location} : {eventDetails.location}</Text>
         <Text>{text.startAtTime} {moment(eventDetails.start).format("dddd DD/MM HH:MM")}</Text>
         <Text>{text.endAtTime} {moment(eventDetails.end).format("dddd DD/MM HH:MM")}</Text>
-        <View>
+        <View style={{display: "flex", alignItems: "flex-end"}}>
             <Text>{text.team}:</Text>
             {eventDetails.users.filter(u => u.booked).map((us, index) => {
                 const userDetails = getUserById(us.id)
