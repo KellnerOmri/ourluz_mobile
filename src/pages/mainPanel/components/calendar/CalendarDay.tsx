@@ -69,6 +69,7 @@ export const CalendarDay: React.FC<Props> = props => {
             justifyContent: "flex-end",
             gap: 10
         }, label: {
+            alignSelf: "flex-end",
             color: colors.dark,
             fontSize: 14,
             fontWeight: "600"
@@ -113,7 +114,7 @@ export const CalendarDay: React.FC<Props> = props => {
                                     style={[styles.valueStyle, {fontSize: 16}]}>{getUserById(user.id)?.firstName} {"." + getUserById(user.id)?.lastName[0]}</Text>
                             })}
                             {eventUserBooked && eventUserBooked.length === 0 &&
-                                <Text style={[styles.valueStyle, {fontSize: 10}]}>טרם שובצו עובדים</Text>}
+                                <Text style={[styles.valueStyle, {fontSize: 12}]}>טרם שובצו עובדים</Text>}
                         </View>
                     </TouchableOpacity>
                 }) :

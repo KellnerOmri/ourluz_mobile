@@ -39,7 +39,7 @@ export const LoginPage = () => {
             alignItems: "center"
         },
         mainLogIn: {
-            flex: 1,
+            // flex: 1,
             marginTop: "20%",
             backgroundColor: colors.primary,
             display: "flex",
@@ -56,6 +56,7 @@ export const LoginPage = () => {
             alignItems: "center",
             backgroundColor: colors.white,
             width: "100%",
+            height: "20%",
             borderRadius: 8,
             paddingHorizontal: 10,
             paddingVertical: 5
@@ -72,10 +73,10 @@ export const LoginPage = () => {
             fontWeight: "600", fontSize: 12
         },
         submitButton: {
-            marginTop: 10, padding: 8, borderRadius: 8, width: "50%", backgroundColor: colors.lightBlue
+            padding: 8, borderRadius: 8, width: "50%", backgroundColor: colors.lightBlue
         },
         submitText: {
-            textAlign: "center", color: colors.white, fontWeight: "600"
+            textAlign: "center", color: colors.white, fontWeight: "600", fontSize: 18
         }, logoWrapper: {
             marginTop: 10
         }
@@ -154,8 +155,6 @@ export const LoginPage = () => {
 
     return <View style={styles.container}>
         <View style={styles.mainLogIn}>
-
-
             <View style={styles.inputWrapper}>
                 <View style={styles.textInput}><TextInput style={{width: "80%"}} placeholder={"Username"}
                                                           value={username}
@@ -172,7 +171,6 @@ export const LoginPage = () => {
                                                                                  source={require("../../assets/icons/close.png")}/></TouchableOpacity>}
                 </View>
             </View>
-
             <TouchableOpacity onPress={() => handleSubmit()} style={styles.submitButton}><Text
                 style={styles.submitText}>התחבר</Text></TouchableOpacity>
             <TouchableOpacity onPress={async () => {
