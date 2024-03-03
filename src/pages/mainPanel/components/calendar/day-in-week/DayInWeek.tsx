@@ -8,7 +8,11 @@ import {text} from "../../../../../utils/dictionary-management";
 import {useDispatch} from "react-redux";
 import {setSelectedEvent} from "../../../../../store/global.slice";
 
-export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[] }> = ({dateLabel, eventInDay}) => {
+export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[], dayIndex: number }> = ({
+                                                                                                           dateLabel,
+                                                                                                           eventInDay,
+                                                                                                           dayIndex
+                                                                                                       }) => {
     const dispatch = useDispatch();
 
     const styles = StyleSheet.create({
@@ -70,7 +74,7 @@ export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[] }
                 const eventUserBooked: { id: number, booked: boolean, roleId: number | null }[] = e.users.filter((u) => u.booked);
 
 
-                return <TouchableOpacity onPress={() => dispatch(setSelectedEvent(e))} key={index}
+                return <TouchableOpacity onPress={() => dispatch(setSelectedEvent(e))} key={`${dayIndex}-${index}`}
                                          style={styles.dayWrapper}>
                     <View style={styles.row}>
                         <Text style={styles.val}>{e.description}</Text>
