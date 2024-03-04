@@ -103,7 +103,8 @@ export const CalendarWeek: React.FC<Props> = props => {
             return <View style={styles.dayWrapper} key={dayIndex}>
                 {eventInDay?.length > 0 &&
                     <DayInWeek key={dayIndex} eventInDay={eventsByDates[moment(day).format("yyyy-MM-DD")]}
-                               dateLabel={`${weekdays[dayIndex]} ${moment(day).format("MM-DD")}`} dayIndex={dayIndex}/>}
+                               dateLabel={`${weekdays[dayIndex]} ${moment(day).format("MM-DD")}`}
+                    />}
             </View>
         })}
     </View>

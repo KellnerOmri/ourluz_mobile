@@ -8,11 +8,10 @@ import {text} from "../../../../../utils/dictionary-management";
 import {useDispatch} from "react-redux";
 import {setSelectedEvent} from "../../../../../store/global.slice";
 
-export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[], dayIndex: number }> = ({
-                                                                                                           dateLabel,
-                                                                                                           eventInDay,
-                                                                                                           dayIndex
-                                                                                                       }) => {
+export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[] }> = ({
+                                                                                         dateLabel,
+                                                                                         eventInDay,
+                                                                                     }) => {
     const dispatch = useDispatch();
 
     const styles = StyleSheet.create({
@@ -67,14 +66,11 @@ export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[], 
         , userListItem: {},
     })
     return <View style={styles.container}>
-
         <Text style={styles.dateLabel}>{dateLabel}</Text>
         {eventInDay?.length > 0 &&
             eventInDay.map((e, index) => {
                 const eventUserBooked: { id: number, booked: boolean, roleId: number | null }[] = e.users.filter((u) => u.booked);
-
-
-                return <TouchableOpacity onPress={() => dispatch(setSelectedEvent(e))} key={`${dayIndex}-${index}`}
+                return <TouchableOpacity onPress={() => dispatch(setSelectedEvent(e))} key={index}
                                          style={styles.dayWrapper}>
                     <View style={styles.row}>
                         <Text style={styles.val}>{e.description}</Text>
@@ -94,9 +90,10 @@ export const DayInWeek: React.FC<{ dateLabel: string, eventInDay: EventModel[], 
                     </View>
                     <View style={styles.userList}>
                         <Text style={styles.label}>{text.employeeList}:</Text>
-                        {eventUserBooked.length > 0 ? <View style={styles.userListItem}>{eventUserBooked.map((us) => {
-                                return <Text
-                                    style={styles.userNameStyle}>{getUserById(us.id)?.firstName} {"." + getUserById(us.id)?.lastName[0]}</Text>
+                        {eventUserBooked.length > 0 ?
+                            <View style={styles.userListItem}>{eventUserBooked.map((us, i) => {
+                                return <Text key={`${index}-${i}`}
+                                             style={styles.userNameStyle}>{getUserById(us.id)?.firstName} {"." + getUserById(us.id)?.lastName[0]}</Text>
                             })}</View>
                             : <Text style={styles.val}>טרם שובצו עובדים</Text>}
 
