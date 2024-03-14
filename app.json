@@ -17,13 +17,15 @@
     "ios": {
       "supportsTablet": true,
       "buildNumber": "11",
-      "icon": "./assets/logo_512.png"
+      "icon": "./assets/logo_512.png",
+      "bundleIdentifier": "ourluz"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.omrikellner.ourluz_mobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
