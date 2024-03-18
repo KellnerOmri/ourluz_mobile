@@ -59,4 +59,7 @@ export const text = {
     thisWeek: isEnglish ? "this week" : "השבוע",
     successSendingWeeklyBooked: isEnglish ? "Success Sending weekly booked" : "השיבוץ נשלח בהצלחה",
     understood: isEnglish ? "understood" : "הבנתי",
+    areYouSureToLogOut: isEnglish ? "Are you sure you want to sign out?" : "האם אתה בטוח שברצונך לצאת?",
+    yes: isEnglish ? "Yes" : "כן, התנתק",
+    no: isEnglish ? "No" : "לא, השאר במערכת",
 };

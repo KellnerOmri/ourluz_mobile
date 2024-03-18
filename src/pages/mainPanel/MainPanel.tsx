@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Header} from "./components/header/Header";
 import {colors} from "../../utils/colors";
@@ -16,6 +16,7 @@ import {
     isUserIsManager
 } from "../../utils/data-management";
 import {TemplatePage} from "./components/templatePage/TemplatePage";
+import {text} from "../../utils/dictionary-management";
 
 export const MainPanel = () => {
     const dispatch = useDispatch()
@@ -68,6 +69,64 @@ export const MainPanel = () => {
             alignItems: "center",
             width: "100%"
 
+        }, logOutWrapper: {
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "white"
+
+        }, logOutPopup: {
+            opacity: 1,
+            display: "flex",
+            position: "absolute",
+            top: "30%",
+            width: "70%",
+            height: 200,
+            borderRadius: 10,
+            flex: 1,
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderWidth: 2,
+            zIndex: 20,
+            backgroundColor: colors.white,
+            borderColor: colors.darkGrey
+        },
+        areYouSureText: {
+            fontSize: 16,
+            textAlign: "center",
+            color: colors.dark,
+            textDecorationLine: "underline",
+            textDecorationStyle: "solid",
+            fontWeight: "600"
+        }, areYouSureButtonContainer: {
+            width: "100%",
+            paddingHorizontal: "5%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            height: 50,
+        }, disconnect: {
+            backgroundColor: colors.lightWolf,
+            width: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
+        },
+        stay: {
+            backgroundColor: colors.primary,
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+            width: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+        },
+        answerText: {
+            color: colors.white
         }
     });
 
@@ -79,6 +138,10 @@ export const MainPanel = () => {
         getAllUsers().then()
     }, [])
 
+    const [openPopupAreYouSure, setOpenPopupAreYourSure] = useState(false)
+    const handleSignOut = () => {
+        setOpenPopupAreYourSure(!openPopupAreYouSure)
+    }
     const signOut = async () => {
         try {
             await AsyncStorage.removeItem('userToken');
@@ -96,9 +159,26 @@ export const MainPanel = () => {
             <View style={{height: "75%"}}><TemplatePage selectedPage={selectedPage}/></View>}
         {selectedPage === SelectedPage.MyShiftPage &&
             <View style={{height: "75%"}}><TemplatePage selectedPage={selectedPage}/></View>}
+        {openPopupAreYouSure && <View style={styles.logOutWrapper}>
+            <View style={styles.logOutPopup}>
+                <Text style={styles.areYouSureText}>{text.areYouSureToLogOut}</Text>
+                <View style={styles.areYouSureButtonContainer}>
+                    <TouchableOpacity onPress={() => setOpenPopupAreYourSure(false)}
+                                      style={styles.stay}><Text
+                        style={styles.answerText}>{text.no}</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={signOut}
+                                      style={styles.disconnect}><Text>{text.yes}</Text></TouchableOpacity>
+
+                    {/*<View style={sidconnecu}><Text>{text.yes}</Text></View>*/}
+                    {/*<View><Text>{text.no}</Text></View>*/}
+                </View>
+            </View>
+        </View>
+        }
+
         <View style={styles.footer}>
             <TouchableOpacity
-                onPress={() => dispatch(setSelectedPage(SelectedPage.MyAvailabilityPage))}
+                onPress={() => !openPopupAreYouSure && dispatch(setSelectedPage(SelectedPage.MyAvailabilityPage))}
             >
                 <View style={{
                     borderWidth: 1,
@@ -109,6 +189,7 @@ export const MainPanel = () => {
                     height: 50,
                     backgroundColor: selectedPage === SelectedPage.MyAvailabilityPage ? colors.primary : colors.white,
                     borderRadius: 50,
+                    opacity: openPopupAreYouSure ? 0.2 : 1
 
                 }}>
                     <Image style={{width: 30, height: 30}}
@@ -117,7 +198,7 @@ export const MainPanel = () => {
 
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => dispatch(setSelectedPage(SelectedPage.MainPanel))}
+                onPress={() => !openPopupAreYouSure && dispatch(setSelectedPage(SelectedPage.MainPanel))}
             >
                 <View style={{
                     borderWidth: 1,
@@ -128,14 +209,14 @@ export const MainPanel = () => {
                     height: 50,
                     backgroundColor: colors.primary,
                     borderRadius: 50,
-                    opacity: selectedPage === SelectedPage.MainPanel ? 1 : 0.2
+                    opacity: selectedPage === SelectedPage.MainPanel && !openPopupAreYouSure ? 1 : 0.2
                 }}>
                     <Image style={{width: 30, height: 40}}
                            source={require("../../assets/icons/ourluzIcon.png")}/>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => dispatch(setSelectedPage(SelectedPage.MyShiftPage))}
+                onPress={() => !openPopupAreYouSure && dispatch(setSelectedPage(SelectedPage.MyShiftPage))}
             >
                 <View style={{
                     borderWidth: 1,
@@ -146,14 +227,14 @@ export const MainPanel = () => {
                     height: 50,
                     backgroundColor: selectedPage === SelectedPage.MyShiftPage ? colors.primary : colors.white,
                     borderRadius: 50,
-
+                    opacity: openPopupAreYouSure ? 0.2 : 1
                 }}>
                     <Image style={{width: 30, height: 30}}
                            source={require("../../assets/icons/myShift.png")}/>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => signOut()}
+                onPress={() => handleSignOut()}
             >
                 <View style={{
                     borderWidth: 1,

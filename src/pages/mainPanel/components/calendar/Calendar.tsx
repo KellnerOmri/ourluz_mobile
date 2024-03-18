@@ -15,9 +15,7 @@ import {
     getStatusEventForClient
 } from "../../../../utils/general";
 import {
-    createEventDictionary,
-    removeAvailabilityFromEvent,
-    setAvailabilityToEvent
+    createEventDictionary, removeAvailabilityFromEvent, setAvailabilityToEvent
 } from "../../../../utils/data-management";
 import {EventModel} from "../../../../models/event.model";
 import {CalendarDay} from "./CalendarDay";
@@ -28,11 +26,7 @@ import {UserEventStatus} from "../../../../utils/enum.const";
 export const Calendar = () => {
     const [openBookedModal, setOpenBookedModal] = useState(true)
     const {
-        calendarModeModel,
-        weeklyEventList,
-        eventList,
-        selectedEvent,
-        currentUser
+        calendarModeModel, weeklyEventList, eventList, selectedEvent, currentUser
     } = useAppSelector(state => state.global)
     const dispatch = useDispatch()
     const [isSelectedDay, setSelectedDate] = useState<boolean>(false);
@@ -126,10 +120,7 @@ export const Calendar = () => {
 
     }
     const isAvailable = useMemo(() => {
-        return checkIfUserIsAvailabilityToEvent(
-            currentUser,
-            weeklyEventList[(selectedEvent as EventModel)?.id]?.users
-        )
+        return checkIfUserIsAvailabilityToEvent(currentUser, weeklyEventList[(selectedEvent as EventModel)?.id]?.users)
     }, [selectedEvent])
 
     const [selectedAvailabilityEvent, setSelectedAvailabilityEvent] = useState(isAvailable ? UserEventStatus.available : UserEventStatus.nothing)
@@ -149,16 +140,9 @@ export const Calendar = () => {
     }
     const styles = StyleSheet.create({
         calendarContainer: {
-            zIndex: 2,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
+            zIndex: 2, width: "100%", height: "100%", display: "flex", alignItems: "center",
         }, weekDays: {
-            display: "flex",
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between"
+            display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"
         }, selectCalendarModeButtons: {
             width: "45%",
             marginTop: 2,
@@ -170,15 +154,9 @@ export const Calendar = () => {
             height: 35,
             borderColor: colors.darkGrey,
         }, selectDateModeBtn: {
-            borderRadius: 3,
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            display: "flex",
-        },
-        verticalLine: {
-            width: 0.5,
-            backgroundColor: colors.darkGrey
+            borderRadius: 3, flex: 1, justifyContent: "center", alignItems: "center", display: "flex",
+        }, verticalLine: {
+            width: 0.5, backgroundColor: colors.darkGrey
         }, calendarHeader: {
             paddingHorizontal: "5%",
             paddingVertical: "2%",
@@ -188,30 +166,20 @@ export const Calendar = () => {
             justifyContent: "space-between",
             width: "100%",
         }, displayDateStyle: {
-            width: "50%",
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            alignItems: "center"
+            width: "50%", display: "flex", justifyContent: "space-between", flexDirection: "row", alignItems: "center"
         }, arrowDate: {
             backgroundColor: colors.lightSkyBlue,
             borderRadius: 8,
             width: 35,
             height: 35,
             display: "flex",
-            alignItems: "center"
-            , justifyContent: "center"
+            alignItems: "center",
+            justifyContent: "center"
         }, eventDetailsContainer: {
-            display: "flex",
-            alignItems: "center"
+            display: "flex", alignItems: "center"
         }, eventDetailsLine: {
-            justifyContent: "flex-end",
-            display: "flex",
-            flexDirection: "row",
-            gap: 10
-        },
-        eventDetailsLabel: {textAlign: "right"},
-        eventDetailsValue: {}
+            justifyContent: "flex-end", display: "flex", flexDirection: "row", gap: 10
+        }, eventDetailsLabel: {textAlign: "right"}, eventDetailsValue: {}
     });
     return <View style={styles.calendarContainer}>
         <View style={styles.calendarHeader}>
@@ -233,54 +201,46 @@ export const Calendar = () => {
                     style={{color: calendarModeModel === CalendarModeModel.DAY ? colors.white : colors.darkGrey}}>יום</Text></TouchableOpacity>
             </View></View>
 
-        {(calendarModeModel === CalendarModeModel.MONTH)
-            &&
-            <View style={styles.weekDays}>
-                {weekdays.map((weekDay, index) => {
-                    const dayIndex = firstDayOfWeek.getDate() + index;
-                    return <View style={{width: `${100 / 7}%`}} key={index}>
-                        <Text style={{
-                            textAlign: "center",
-                            width: "100%",
-                        }}> {weekDay}</Text>
-                    </View>
-                })}
-            </View>}
-        {calendarModeModel === CalendarModeModel.MONTH &&
-            <CalendarMonth
+        {(calendarModeModel === CalendarModeModel.MONTH) && <View style={styles.weekDays}>
+            {weekdays.map((weekDay, index) => {
+                const dayIndex = firstDayOfWeek.getDate() + index;
+                return <View style={{width: `${100 / 7}%`}} key={index}>
+                    <Text style={{
+                        textAlign: "center", width: "100%",
+                    }}> {weekDay}</Text>
+                </View>
+            })}
+        </View>}
+        {calendarModeModel === CalendarModeModel.MONTH && <CalendarMonth
+            dateMode={calendarModeModel}
+            currentDay={currentDay}
+            isSelectedDay={isSelectedDay}
+            changeCurrentDay={changeCurrentDay}
+            firstDayOfMonth={firstDayOfMonth}
+            eventsByDates={eventsByDates}
+            currentUser={currentUser}
+        />}
+        {calendarModeModel === CalendarModeModel.WEEK && <ScrollView style={{height: "100%", width: "100%"}}>
+            <CalendarWeek
                 dateMode={calendarModeModel}
                 currentDay={currentDay}
                 isSelectedDay={isSelectedDay}
                 changeCurrentDay={changeCurrentDay}
-                firstDayOfMonth={firstDayOfMonth}
+                firstDayOfWeek={firstDayOfWeek}
                 eventsByDates={eventsByDates}
                 currentUser={currentUser}
-            />}
-        {calendarModeModel === CalendarModeModel.WEEK &&
-            <ScrollView style={{height: "100%", width: "100%"}}>
-                <CalendarWeek
-                    dateMode={calendarModeModel}
-                    currentDay={currentDay}
-                    isSelectedDay={isSelectedDay}
-                    changeCurrentDay={changeCurrentDay}
-                    firstDayOfWeek={firstDayOfWeek}
-                    eventsByDates={eventsByDates}
-                    currentUser={currentUser}
-                />
-            </ScrollView>
-        }
-        {calendarModeModel === CalendarModeModel.DAY &&
-            <ScrollView style={{height: "100%", width: "100%"}}>
-                <CalendarDay
-                    dateMode={calendarModeModel}
-                    currentDay={currentDay}
-                    isSelectedDay={isSelectedDay}
-                    changeCurrentDay={changeCurrentDay}
-                    eventsByDates={eventsByDates}
-                    currentUser={currentUser}
-                />
-            </ScrollView>
-        }
+            />
+        </ScrollView>}
+        {calendarModeModel === CalendarModeModel.DAY && <ScrollView style={{height: "100%", width: "100%"}}>
+            <CalendarDay
+                dateMode={calendarModeModel}
+                currentDay={currentDay}
+                isSelectedDay={isSelectedDay}
+                changeCurrentDay={changeCurrentDay}
+                eventsByDates={eventsByDates}
+                currentUser={currentUser}
+            />
+        </ScrollView>}
 
 
         <Modal
@@ -320,12 +280,12 @@ export const Calendar = () => {
                     <View style={styles.eventDetailsLine}>
                         <Text
                             style={styles.eventDetailsValue}>{moment(selectedEvent?.start).format("HH:MM DD/MM")}</Text>
-                        <Text style={styles.eventDetailsLabel}>{text.startAtTime}:</Text>
+                        <Text style={styles.eventDetailsLabel}>{text.startAtTime}</Text>
                     </View>
                     <View style={styles.eventDetailsLine}>
                         <Text
                             style={styles.eventDetailsValue}>{moment(selectedEvent?.end).format("HH:MM DD/MM")}</Text>
-                        <Text style={styles.eventDetailsLabel}>{text.endAtTime}:</Text>
+                        <Text style={styles.eventDetailsLabel}>{text.endAtTime}</Text>
                     </View>
                     {getStatusEventForClient((selectedEvent as EventModel)?.users ?? [], currentUser) !== UserEventStatus.booked &&
                         <View style={styles.eventDetailsLine}>
@@ -358,8 +318,9 @@ export const Calendar = () => {
                             </View>
                         </View>}
                     {getStatusEventForClient((selectedEvent as EventModel)?.users ?? [], currentUser) === UserEventStatus.booked &&
-                        <View><Text>{text.youAreAlreadyBooked}</Text></View>
-                    }
+                        <View style={{
+                            alignItems: "flex-end",
+                        }}><Text style={{}}>{text.youAreAlreadyBooked}</Text></View>}
 
                     <TouchableOpacity
                         style={{width: "100%", marginTop: 40, display: "flex", alignItems: "center"}}
