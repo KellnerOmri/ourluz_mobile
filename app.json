@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "yoman",
+    "name": "ourluz",
     "slug": "ourluz_mobile",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/ourLuzLogo1024.png",
     "userInterfaceStyle": "light",
